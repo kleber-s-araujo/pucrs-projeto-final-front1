@@ -7,7 +7,7 @@ const About = () => {
   return (
     <>
       {/* <!-- ===== About Start ===== --> */}
-      <section className="overflow-hidden pb-20 lg:pb-25 xl:pb-30">
+      <section className="overflow-hidden pb-20 lg:pb-25 xl:pb-30 mt-20">
         <div className="mx-auto max-w-c-1235 px-4 md:px-8 xl:px-0">
           <div className="flex items-center gap-8 lg:gap-32.5">
             <motion.div
@@ -29,15 +29,8 @@ const About = () => {
               className="animate_left relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
             >
               <Image
-                src="/images/about/about-light-01.png"
+                src="/images/about/about-01.png"
                 alt="About"
-                className="dark:hidden"
-                fill
-              />
-              <Image
-                src="/images/about/about-dark-01.png"
-                alt="About"
-                className="hidden dark:block"
                 fill
               />
             </motion.div>
@@ -61,19 +54,19 @@ const About = () => {
             >
               <span className="font-medium uppercase text-black dark:text-white">
                 <span className="mb-4 mr-4 inline-flex rounded-full bg-meta px-4.5 py-1 text-metatitle uppercase text-white ">
-                  New
-                </span>{" "}
-                SaaS Boilerplate for Next.js
+                  Nova
+                </span>{""}
+                Plataforma de Renderizações
               </span>
               <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
-                A Complete Solution for
+                A Solução completa de
                 <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg dark:before:bg-titlebgdark">
-                  SaaS Startup
+                  Renderizações
                 </span>
               </h2>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-                ultricies lacus non fermentum ultrices. Fusce consectetur le.
+                Ganhe tempo e entregue valor aos seus clientes com imagens estonteantes
+                de alta qualidade 
               </p>
 
               <div className="mt-7.5 flex items-center gap-5">
@@ -84,9 +77,9 @@ const About = () => {
                 </div>
                 <div className="w-3/4">
                   <h3 className="mb-0.5 text-metatitle2 text-black dark:text-white">
-                    React 18, Next.js 13 and TypeScript
+                    SketchUp e Blender
                   </h3>
-                  <p>Ut ultricies lacus non fermentum ultrices.</p>
+                  <p>Blocagens e Criação de Ambientes</p>
                 </div>
               </div>
               <div className="mt-7.5 flex items-center gap-5">
@@ -97,9 +90,9 @@ const About = () => {
                 </div>
                 <div className="w-3/4">
                   <h3 className="mb-0.5 text-metatitle2 text-black dark:text-white">
-                    Fully Customizable
+                    V-Ray e Photoshop
                   </h3>
-                  <p>consectetur adipiscing elit fermentum ultricies.</p>
+                  <p>Render Engine e Pós-Processamento</p>
                 </div>
               </div>
             </motion.div>
@@ -131,17 +124,18 @@ const About = () => {
               className="animate_left md:w-1/2"
             >
               <h4 className="font-medium uppercase text-black dark:text-white">
-                Launch Your SaaS Fast
+                Foco no seu negócio
               </h4>
               <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
-                Packed with All Essential {"   "}
+                Se preocupe com o que realmente {"   "}
                 <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg2 dark:before:bg-titlebgdark">
-                  Integrations
+                  Importa 
                 </span>
               </h2>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-                ultricies lacus non fermentum ultrices. Fusce consectetur le.
+                Tenha mais tempo para o que realmente importa no seu negócio sem preocupações, 
+                seja prospectando novos clientes ou crescendo sua marca
+                e deixe da parte de finalização pra você!
               </p>
               <div>
                 <a
@@ -149,7 +143,7 @@ const About = () => {
                   className="group mt-7.5 inline-flex items-center gap-2.5 text-black hover:text-primary dark:text-white dark:hover:text-primary"
                 >
                   <span className="duration-300 group-hover:pr-2">
-                    Know More
+                    Saiba mais
                   </span>
                   <svg
                     width="14"
@@ -181,15 +175,9 @@ const About = () => {
               className="animate_right relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
             >
               <Image
-                src="./images/about/about-light-02.svg"
+                src="/images/about/about-02.png"
                 alt="About"
                 className="dark:hidden"
-                fill
-              />
-              <Image
-                src="./images/about/about-dark-02.svg"
-                alt="About"
-                className="hidden dark:block"
                 fill
               />
             </motion.div>

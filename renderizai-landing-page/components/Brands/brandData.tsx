@@ -2,46 +2,32 @@ import { Brand } from "@/types/brand";
 
 const brandData: Brand[] = [
   {
-    id: 0.25,
-    name: "Client",
-    href: "#",
-    image: "/images/brand/brand-light-01.svg",
-    imageLight: "/images/brand/brand-dark-01.svg",
-  },
-  {
     id: 0.3,
-    name: "Client",
+    name: "V-Ray Render",
     href: "#",
-    image: "/images/brand/brand-light-02.svg",
-    imageLight: "/images/brand/brand-dark-02.svg",
+    image: "/images/brand/brand-vray.svg",
+    imageLight: "/images/brand/brand-vray.svg",
   },
   {
     id: 0.4,
-    name: "Client",
+    name: "SketchUp",
     href: "#",
-    image: "/images/brand/brand-light-03.svg",
-    imageLight: "/images/brand/brand-dark-03.svg",
+    image: "/images/brand/brand-SketchUp.svg",
+    imageLight: "/images/brand/brand-SketchUp.svg",
   },
   {
     id: 0.5,
-    name: "Client",
+    name: "Photoshop",
     href: "#",
-    image: "/images/brand/brand-light-04.svg",
-    imageLight: "/images/brand/brand-dark-04.svg",
+    image: "/images/brand/brand-ps.svg",
+    imageLight: "/images/brand/brand-ps.svg",
   },
   {
     id: 0.6,
-    name: "Client",
+    name: "Blender",
     href: "#",
-    image: "/images/brand/brand-light-05.svg",
-    imageLight: "/images/brand/brand-dark-05.svg",
-  },
-  {
-    id: 0.7,
-    name: "Client",
-    href: "#",
-    image: "/images/brand/brand-light-06.svg",
-    imageLight: "/images/brand/brand-dark-06.svg",
+    image: "/images/brand/brand-Blender.svg",
+    imageLight: "/images/brand/brand-Blender.svg",
   },
 ];
 

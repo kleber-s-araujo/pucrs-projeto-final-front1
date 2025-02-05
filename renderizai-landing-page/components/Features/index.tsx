@@ -13,11 +13,10 @@ const Feature = () => {
           {/* <!-- Section Title Start --> */}
           <SectionHeader
             headerInfo={{
-              title: "SOLID FEATURES",
-              subtitle: "Core Features of Solid",
-              description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In
-            convallis tortor eros. Donec vitae tortor lacus. Phasellus aliquam
-            ante in maximus.`,
+              title: "Benefícios",
+              subtitle: "Benefícios Essenciais da Renderizaí",
+              description: `Conheça as principais características da Renderizaí. Pensados para que arquitetos 
+              e designers de interiores entreguem imagens de alta qualidade sem sacrificar seu tempo pessoal`,
             }}
           />
           {/* <!-- Section Title End --> */}

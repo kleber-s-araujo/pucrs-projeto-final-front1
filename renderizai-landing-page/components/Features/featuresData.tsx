@@ -3,45 +3,46 @@ import { Feature } from "@/types/feature";
 const featuresData: Feature[] = [
   {
     id: 1,
-    icon: "/images/icon/icon-01.svg",
-    title: "Crafted for SaaS",
+    icon: "/images/icon/icon-04.svg",
+    title: "Otimize seu Tempo",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Se concentre em atividades principais sem comprometer a qualidade das imagens ou os prazos de entrega.",
   },
   {
     id: 2,
     icon: "/images/icon/icon-02.svg",
-    title: "High-quality Design",
+    title: "Atividades Organizadas",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Organize suas atividades de Renderização e tenha o controle sobre suas entregas.",
   },
   {
     id: 3,
-    icon: "/images/icon/icon-03.svg",
-    title: "Next.js 13 + TypeScript",
+    icon: "/images/icon/icon-01.svg",
+    title: "Metodologia Ágil",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Proporciona uma solução ágil e segura para a terceirização de renderizações.",
   },
   {
     id: 4,
-    icon: "/images/icon/icon-04.svg",
-    title: "Sanity Blog and Docs",
+    icon: "/images/icon/icon-03.svg",
+    title: "Conexão",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Conecta profissionais da arquitetura e design de interiores com renderizadores qualificados.",
   },
+  
   {
     id: 5,
     icon: "/images/icon/icon-05.svg",
-    title: "DB, Auth and Stripe",
+    title: "Entregue valor",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Assegura que os profissionais possam confiar na qualidade e pontualidade da plataforma.",
   },
   {
     id: 6,
     icon: "/images/icon/icon-06.svg",
-    title: "Regular Free Updates",
+    title: "Foco na Eficiência",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In convallis tortor.",
+      "Facilitar o fluxo de comunicação e gestão de entregas, com foco em eficiência.",
   },
 ];
 
