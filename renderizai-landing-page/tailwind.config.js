@@ -29,8 +29,10 @@ module.exports = {
         black: "#181C31",
         blackho: "#2C3149",
         blacksection: "#1C2136",
-        primary: "#28666e",
-        primaryho: "#153538",
+        primary: "#6B8F71", 
+        primaryho: "#0D2B1D",
+        /* primary: "#28666e", 
+        primaryho: "#153538", */
         meta: "#20C5A8",
         waterloo: "#757693",
         manatee: "#999AA1",

@@ -29,9 +29,9 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed left-0 top-0 z-99999 w-full py-7 ${
+      className={`fixed left-0 top-0 z-999 w-full py-7 ${
         stickyMenu
-          ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
+          ? "bg-white !py-4 transition duration-100 dark:bg-black"
           : ""
       }`}
     >
@@ -41,7 +41,7 @@ const Header = () => {
             <Image
               src="/images/logo/logo2.png"
               alt="logo"
-              width={160}
+              width={190}
               height={0}
               className=" dark:hidden"
             />
@@ -145,13 +145,14 @@ const Header = () => {
           </nav>
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
-            <ThemeToggler />
+            
+            { /* <ThemeToggler /> */}
 
             <Link
               href="#"
               className="flex items-center justify-center rounded-full bg-primary px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
             >
-              Comece a Renderizar 🔥
+              Comece a Renderizar
             </Link>
           </div>
         </div>

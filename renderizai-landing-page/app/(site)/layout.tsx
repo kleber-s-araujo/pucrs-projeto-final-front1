@@ -8,8 +8,9 @@ import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google";
 import "../globals.css";
 const inter = Inter({ subsets: ["latin"] });
-
 import ToasterContext from "../context/ToastContext";
+
+require('dotenv').config();
 
 export default function RootLayout({
   children,
@@ -24,7 +25,7 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="light"
         >
-          <Lines />
+          { /* <Lines /> */ }
           <Header />
           <ToasterContext />
           {children}
