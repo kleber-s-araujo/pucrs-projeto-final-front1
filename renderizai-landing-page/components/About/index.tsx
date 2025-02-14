@@ -1,13 +1,19 @@
 "use client";
-
+import { Metadata } from "next";
 import { motion } from "framer-motion";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Renderizaí | Plataforma de Renderização",
+  description: "Plataforma de Renderizaçãoes e Design de Interiores",
+  // other metadata
+};
 
 const About = () => {
   return (
     <>
       {/* <!-- ===== About Start ===== --> */}
-      <section className="overflow-hidden pb-20 lg:pb-25 xl:pb-30 mt-20">
+      <section className="overflow-hidden pb-20 lg:pb-25 xl:pb-30 mt-15">
         <div className="mx-auto max-w-c-1235 px-4 md:px-8 xl:px-0">
           <div className="flex items-center gap-8 lg:gap-32.5">
             <motion.div
@@ -26,10 +32,10 @@ const About = () => {
               whileInView="visible"
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
-              className="animate_left relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
+              className="animate_left relative mx-auto hidden aspect-[688/526.5] md:block md:w-1/2"
             >
               <Image
-                src="/images/about/about-01.png"
+                src="/images/about/img-02.png"
                 alt="About"
                 fill
               />
@@ -139,7 +145,7 @@ const About = () => {
               </p>
               <div>
                 <a
-                  href="#"
+                  href="/sobre"
                   className="group mt-7.5 inline-flex items-center gap-2.5 text-black hover:text-primary dark:text-white dark:hover:text-primary"
                 >
                   <span className="duration-300 group-hover:pr-2">
@@ -172,10 +178,10 @@ const About = () => {
               whileInView="visible"
               transition={{ duration: 1, delay: 0.1 }}
               viewport={{ once: true }}
-              className="animate_right relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
+              className="animate_right relative mx-auto hidden aspect-[688/456.5] md:block md:w-1/2"
             >
               <Image
-                src="/images/about/about-02.png"
+                src="/images/about/img-03.png"
                 alt="About"
                 className="dark:hidden"
                 fill

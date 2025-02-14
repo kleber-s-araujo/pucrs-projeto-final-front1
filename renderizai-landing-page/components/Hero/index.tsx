@@ -11,7 +11,7 @@ const Hero = () => {
 
   return (
     <>
-      <section className="overflow-hidden pb-20 pt-35 md:pt-40 xl:pb-25 xl:pt-46">
+      <section className="overflow-hidden pb-20 pt-30 md:pt-40 xl:pb-25 xl:pt-26">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
           <div className="flex lg:items-center lg:gap-8 xl:gap-32.5">
             <div className=" md:w-1/2">
@@ -55,13 +55,15 @@ const Hero = () => {
 
             <div className="animate_right hidden md:w-1/2 lg:block">
               <div className="relative 2xl:-mr-7.5">
+                { /*
                 <Image
                   src="/images/shape/shape-01.png"
                   alt="shape"
                   width={46}
                   height={246}
-                  className="absolute -left-11.5 top-0"
+                  className="absolute -left-11.5 top-0 z-10"
                 />
+                */ }
                 <Image
                   src="/images/shape/shape-02.svg"
                   alt="shape"
@@ -74,18 +76,18 @@ const Hero = () => {
                   alt="shape"
                   width={21.64}
                   height={21.66}
-                  className="absolute -right-6.5 bottom-0 z-1"
+                  className="absolute -right-6.5 bottom-0 z-10"
                 />
-                <div className=" relative aspect-[700/444] w-full">
+                <div className="relative aspect-[855/708] w-full z-100">
                   <Image
                     className=" dark:hidden"
-                    src="/images/hero/1.png"
+                    src="/images/hero/img-01.png"
                     alt="Hero"
                     fill
                   />
                   <Image
                     className="hidden dark:block"
-                    src="/images/hero/1.png"
+                    src="/images/hero/img-01.png"
                     alt="Hero"
                     fill
                   />

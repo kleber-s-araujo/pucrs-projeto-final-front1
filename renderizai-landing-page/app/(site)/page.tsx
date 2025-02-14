@@ -21,15 +21,10 @@ export default function Home() {
       <Brands />
       <Feature />
       <About />
-      { /* <FeaturesTab />
-       <FunFact />
-      <Integration /> */ }
       <CTA />
       <FAQ />
       <Testimonial />
       <Pricing />
-      {/* <Contact />
-       <Blog /> */}
     </main>
   );
 }

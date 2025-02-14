@@ -18,3 +18,11 @@ export type Blog = {
   publishedAt?: string;
   allImages?: any[];
 };
+
+export type itemGaleria = {
+  idImagem: string,
+  idRenderizador: Number,
+  titulo: string,
+  signedUrl?: string,
+  nome: string
+}

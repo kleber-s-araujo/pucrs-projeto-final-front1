@@ -1,35 +1,31 @@
-import BlogData from "@/components/Blog/blogData";
-import GalleryItem from "@/components/Blog/GalleryItem";
-import { Metadata } from "next";
 import storageService from '@/services/gstorage';
-
-export const metadata: Metadata = {
-  title: "Renderizaí | Plataforma de Renderização",
-  description: "Plataforma de Renderizaçãoes e Design de Interiores",
-  // other metadata
-};
+import { itemGaleria } from "@/types/blog";
+import GalleryImage from "@/components/Blog/GalleryImage";
 
 const BlogPage = async () => {  
-
-  const url = await storageService.generateSignedUrl(process.env.BUCKET_PORTFOLIO, 'render1.png');
-
-  BlogData.forEach(post => {
-    post.mainImage = url;
-  });
-
+ 
+  const response = await storageService.getGalleryItems(20);
+  const imagens: itemGaleria[] = response.map(element => ({
+    idImagem: element.idImagem,
+    idRenderizador: element.idRenderizador,
+    titulo: element.titulo,
+    signedUrl: element.signedUrl,
+    nome: element.nome
+  }));
+  
   return (
     <>
-      {/* <!-- ===== Blog Grid Start ===== --> */}
+      {/* <!-- ===== Image Grid Start ===== --> */}
       <section className="py-20 lg:py-25 xl:py-30">
-        <div className="mx-auto mt-15 max-w-c-1280 px-4 md:px-8 xl:mt-20 xl:px-0">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
-            {BlogData.map((post, key) => (
-              <GalleryItem key={key} blog={post} />
+        <div className="mx-auto max-w-c-1280 px-4 md:px-8 xl:mt-10 xl:px-0">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 text-white">
+            { imagens.map((imagem, index) => (              
+                <GalleryImage key={index} itemkey={index} Imagem={imagem} />
             ))}
           </div>
         </div>
-      </section>
-      {/* <!-- ===== Blog Grid End ===== --> */}
+      </section>          
+      {/* <!-- ===== Image Grid End ===== --> */}
     </>
   );
 };

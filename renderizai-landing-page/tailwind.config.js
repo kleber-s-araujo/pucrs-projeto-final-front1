@@ -27,10 +27,11 @@ module.exports = {
         btndark: "#292E45",
         white: "#FFFFFF",
         black: "#181C31",
+        blck: "#1C1C1C",
         blackho: "#2C3149",
         blacksection: "#1C2136",
-        primary: "#6B8F71", 
-        primaryho: "#0D2B1D",
+        primary: "#727D73", 
+        primaryho: "#5a625a",
         /* primary: "#28666e", 
         primaryho: "#153538", */
         meta: "#20C5A8",

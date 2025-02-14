@@ -135,7 +135,7 @@ const Footer = () => {
                     </li>
                     <li>
                       <a
-                        href="/policies"
+                        href="/politicasdeprivacidade"
                         className="mb-3 inline-block hover:text-primary"
                       >
                         Políticas de Privacidade
@@ -143,7 +143,7 @@ const Footer = () => {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="/suporte"
                         className="mb-3 inline-block hover:text-primary"
                       >
                         Fale Conosco

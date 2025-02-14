@@ -58,8 +58,8 @@ const GalleryItem = ({ blog }: { blog: Blog } ) => {
       {/* Modal */}
       {selectedImage !== null && (
         <div className="fixed inset-0 bg-black bg-opacity-95 flex items-center justify-center z-[9999]">
+          
           {/* Close button */}
-
           <button
             onClick={closeModal}
             className="absolute bottom-4 text-white hover:text-gray-300 flex items-center"
@@ -105,6 +105,7 @@ const GalleryItem = ({ blog }: { blog: Blog } ) => {
           </div>
         </div>
       )}
+      {/* Fim Modal */}
 
     </>
   );
