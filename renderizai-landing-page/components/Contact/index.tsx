@@ -1,7 +1,9 @@
 "use client";
+import contatoService from "@/services/contato";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React, { SyntheticEvent, useState } from "react";
+import { toast } from 'react-hot-toast';
 
 const Contact = () => {
   
@@ -22,10 +24,15 @@ const Contact = () => {
 
     try {
       
-      
+      const retorno = await contatoService.enviaMensagemContato(formData.nome, formData.email, formData.assunto, formData.telefone, formData.mensagem);
+      if (retorno.status === 200)
+      { 
+        toast.success('Obrigado por entrar com contao. Sua Mensagem foi recebida com Sucesso!');
+        setFormData({ nome: "", email: "", assunto: "", telefone: "", mensagem: "" });
+      }        
 
     } catch (error) {
-      console.error('Erro ao enviar Formulário', error.message);
+      console.error('Erro ao enviar Formulário', error);
     }
 
   };
@@ -90,6 +97,7 @@ const Contact = () => {
                     required
                     placeholder="Nome"
                     onChange={handleChange}
+                    value={formData.nome}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
 
@@ -100,6 +108,7 @@ const Contact = () => {
                     required
                     placeholder="Email"
                     onChange={handleChange}
+                    value={formData.email}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
                 </div>
@@ -112,6 +121,7 @@ const Contact = () => {
                     required
                     placeholder="Assunto"
                     onChange={handleChange}
+                    value={formData.assunto}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
 
@@ -122,6 +132,7 @@ const Contact = () => {
                     required
                     placeholder="Telefone"
                     onChange={handleChange}
+                    value={formData.telefone}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
                 </div>
@@ -134,6 +145,7 @@ const Contact = () => {
                     name="mensagem"
                     required
                     onChange={handleChangeText}
+                    value={formData.mensagem}
                     className="w-full border-b border-stroke bg-transparent focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white"
                   ></textarea>
                 </div>

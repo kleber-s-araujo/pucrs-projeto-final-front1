@@ -26,7 +26,6 @@ const getGalleryItems = async (max: Number) => {
   
 };
 
-
 async function generateSignedUrl(bucketName, fileName) {
 
     // Inicializa o cliente do Storage
