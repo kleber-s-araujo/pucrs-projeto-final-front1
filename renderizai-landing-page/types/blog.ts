@@ -23,6 +23,6 @@ export type itemGaleria = {
   idImagem: string,
   idRenderizador: Number,
   titulo: string,
-  signedUrl?: string,
+  signedUrl: string,
   nome: string
 }

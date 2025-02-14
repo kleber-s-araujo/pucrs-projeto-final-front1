@@ -1,14 +1,35 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import React from "react";
+import React, { SyntheticEvent, useState } from "react";
 
 const Contact = () => {
-  /**
-   * Source: https://www.joshwcomeau.com/react/the-perils-of-rehydration/
-   * Reason: To fix rehydration error
-   */
+  
   const [hasMounted, setHasMounted] = React.useState(false);
+
+  //Form Data
+  const [formData, setFormData] = useState({ nome: "", email: "", assunto: "", telefone: "", mensagem: "" });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+  const handleChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+
+    event.preventDefault();
+
+    try {
+      
+      
+
+    } catch (error) {
+      console.error('Erro ao enviar Formulário', error.message);
+    }
+
+  };
+
   React.useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -60,42 +81,59 @@ const Contact = () => {
                 Entre em Contato
               </h2>
 
-              <form
-                action="https://formbold.com/s/unique_form_id"
-                method="POST"
-              >
+              <form onSubmit={handleSubmit} >
                 <div className="mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
+                    id="nome"
+                    name="nome"
                     type="text"
+                    required
                     placeholder="Nome"
+                    onChange={handleChange}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
 
                   <input
+                    id="email"
                     type="email"
+                    name="email"
+                    required
                     placeholder="Email"
+                    onChange={handleChange}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
                 </div>
 
                 <div className="mb-12.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
+                    id="assunto"
                     type="text"
+                    name="assunto"
+                    required
                     placeholder="Assunto"
+                    onChange={handleChange}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
 
                   <input
+                    id="telefone"
                     type="text"
+                    name="telefone"
+                    required
                     placeholder="Telefone"
+                    onChange={handleChange}
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                   />
                 </div>
 
                 <div className="mb-11.5 flex">
                   <textarea
+                    id="mensagem"
                     placeholder="Mensagem"
                     rows={4}
+                    name="mensagem"
+                    required
+                    onChange={handleChangeText}
                     className="w-full border-b border-stroke bg-transparent focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white"
                   ></textarea>
                 </div>
@@ -128,13 +166,13 @@ const Contact = () => {
                       htmlFor="default-checkbox"
                       className="flex max-w-[425px] cursor-pointer select-none pl-5"
                     >
-                      Ao selecioanr este Checkbox, você concorda em usar nossos termos de uso e consente o uso de cookies no navegador.
+                      Concorda em usar nossos termos de uso e consente o uso de cookies no navegador?
                     </label>
                   </div>
 
                   <button
                     aria-label="send message"
-                    className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark"
+                    className="inline-flex items-center gap-1 rounded-full bg-black px-6 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark"
                   >
                     Enviar Mensagem
                     <svg
