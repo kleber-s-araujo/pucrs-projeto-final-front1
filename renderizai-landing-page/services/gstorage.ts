@@ -9,21 +9,26 @@ async function getGalleryHeaders() {
 
 const getGalleryItems = async (max: Number) => {
 
-  //Busca todas as imagens da Galeria
-  const response = await http.get<any>(`/image/galeria/${max}`);
-  const rows = response.data.rows;
-  
-  // Map the rows to new images instead of using forEach
-  const newImages: itemGaleria[] = rows.map(element => ({
-    idImagem: element.idImagem,
-    idRenderizador: element.idRenderizador,
-    titulo: element.titulo,
-    signedUrl: element.signedUrl,
-    nome: element.nome
-  }));
-  
-  return newImages;
-  
+  try {
+
+      //Busca todas as imagens da Galeria
+      const response = await http.get<any>(`/image/galeria/${max}`);
+      const rows = response.data.rows;
+      
+      // Map the rows to new images instead of using forEach
+      const newImages: itemGaleria[] = rows.map(element => ({
+        idImagem: element.idImagem,
+        idRenderizador: element.idRenderizador,
+        titulo: element.titulo,
+        signedUrl: element.signedUrl,
+        nome: element.nome
+      }));
+      
+      return newImages;
+
+  } catch (error) {
+     console.log("Erro ao buscar imagens", error);
+  }
 };
 
 async function generateSignedUrl(bucketName, fileName) {

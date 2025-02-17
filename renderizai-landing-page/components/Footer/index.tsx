@@ -93,7 +93,7 @@ const Footer = () => {
                     </li>
                     <li>
                       <a
-                        href="inicie-um-projeto"
+                        href="simulacao"
                         className="mb-3 inline-block hover:text-primary"
                       >
                         Simulação
