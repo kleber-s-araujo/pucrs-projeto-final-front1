@@ -32,6 +32,8 @@ const Simulacao: React.FC = () => {
                 behavior: "smooth",
             });
 
+            doCalculation();
+
             return;
         }
 
@@ -170,6 +172,7 @@ const Simulacao: React.FC = () => {
     };
 
     /* Validations */
+    const [resultVal, setResultVal] = useState<number>(0.00);
     const [error1, setError1] = useState<string>('');
     const [error2, setError2] = useState<string>('');
     const [error3, setError3] = useState<string>('');
@@ -180,7 +183,7 @@ const Simulacao: React.FC = () => {
                 setError1("Informar o Nome do Projeto!");
                 return false;
             }
-            else if (m2Interior == '' && m2Edificacao == '' && m2Terreno == '') {
+            else if ( ( radioValue == 'option1' && m2Interior == '' ) || ( radioValue == 'option2' &&  ( m2Edificacao == '' || m2Terreno == '' ) ) ) {
                 setError1("Informar o a metragem quadrada do Projeto!");
                 return false;
             }
@@ -204,6 +207,33 @@ const Simulacao: React.FC = () => {
         return true;
     };
 
+    const doCalculation = () => {
+
+        //Valor Base
+        const baseVal = packageValue == 'basic' ? 350 : packageValue == 'standard' ? 600 : 800;
+
+        //Valor por m²
+        const m2val = radioValue == 'option1' ? ( parseInt(m2Interior, 10) * 4.47 ) : 
+            ( parseInt(m2Edificacao,10) * 3.50 + parseInt(m2Edificacao,10) * 2,27 );
+
+        //Ambientes        
+        var adtAmb = 0;
+        if ( packageValue == 'basic' ) {
+            if ( selectedRooms.length > 1 )
+                adtAmb = (selectedRooms.length - 1) * 255.77;
+        }
+        
+        const result = baseVal + m2val + adtAmb;
+        setResultVal(result);
+    }   
+
+    const CurrencyFormatter = (amount: number) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(amount);
+    }
+    
     return (
 
         <>
@@ -593,43 +623,44 @@ const Simulacao: React.FC = () => {
 
                                             <div onClick={(e) => setPackage('basic')}
                                                 className={`shadow-md rounded-lg p-6 m-4 w-full max-w-sm border-2 cursor-pointer
-                                                        transition-all duration-300 transform hover:scale-105
-                                                        ${packageValue === 'basic' ? 'text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
+                                                        transition-all duration-300 transform hover:scale-110
+                                                        ${packageValue === 'basic' ? 'scale-110 text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
                                                 <h2 className="m-3 text-xl font-bold text-center mb-4">Basico</h2>
                                                 <ul className="mt-6 list-none p-0 mb-2">
-                                                    <li key={1} className="p-2 rounded-md text-gray-700">• Máx. 3 Imagens</li>
+                                                    <li key={1} className="p-2 rounded-md text-gray-700">• 3 Imagens</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Qualidade Standard</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Apenas 1 Ambiente</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 2 tipos de Iluminação</li>
                                                 </ul>
                                             </div>
 
                                             <div onClick={(e) => setPackage('standard')}
                                                 className={`shadow-md rounded-lg p-6 m-4 w-full max-w-sm border-2 cursor-pointer
-                                                        transition-all duration-300 transform hover:scale-105
-                                                        ${packageValue === 'standard' ? 'text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
+                                                        transition-all duration-300 transform hover:scale-110
+                                                        ${packageValue === 'standard' ? 'scale-110 text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
                                                 <h2 className="m-3 text-xl font-bold text-center mb-4">Padrão</h2>
                                                 <ul className="mt-6 list-none p-0 mb-2">
-                                                    <li key={1} className="p-2 rounded-md text-gray-700">• Máx. 5 Imagens</li>
+                                                    <li key={1} className="p-2 rounded-md text-gray-700">• 5 Imagens</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Qualidade Standard</li>
-                                                    <li key={2} className="mb-2 p-2 rounded-md text-gray-700">• Até 2 Ambientes</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 2 Ambientes</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 4 tipos de Iluminação</li>
                                                 </ul>
                                             </div>
 
                                             <div onClick={(e) => setPackage('premium')}
                                                 className={`shadow-md rounded-lg p-6 m-4 w-full max-w-sm border-2 cursor-pointer
-                                                        transition-all duration-300 transform hover:scale-105
-                                                        ${packageValue === 'premium' ? 'text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
+                                                        transition-all duration-300 transform hover:scale-110
+                                                        ${packageValue === 'premium' ? 'scale-110 text-primaryho bg-primary bg-opacity-5 border-primary' : 'bg-white'}`}>
                                                 <h2 className="m-3 text-xl font-bold text-center mb-4">Premium</h2>
                                                 <ul className="mt-6 list-none p-0 mb-2">
-                                                    <li key={1} className="p-2 rounded-md text-gray-700">• Máx. 10 Imagens</li>
+                                                    <li key={1} className="p-2 rounded-md text-gray-700">• 10 Imagens</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Qualidade Superior do Render</li>
-                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 3 Ambientes</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 4 Ambientes</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 5 tipos de Iluminação</li>
                                                 </ul>
                                             </div>
 
                                         </div>
-
-
 
                                     </div>
 
@@ -767,7 +798,7 @@ const Simulacao: React.FC = () => {
 
                 <div className="w-full mx-auto max-w-c-1500 px-4 md:px-8 xl:px-0 mt-10">
                     <h1 className="text-center mb-4 text-7xl font-bold text-yellow">
-                        R$ 1999,99
+                        { CurrencyFormatter(resultVal) } 
                     </h1>
                 </div>
 
