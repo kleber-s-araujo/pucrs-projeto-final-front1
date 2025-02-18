@@ -1,0 +1,15 @@
+export type Requisicao = {
+    nome: string,            
+    radioValue: string,
+    m2Interior: number,
+    m2Edificacao: number,
+    m2Terreno: number,
+    mensagem: string,
+    selectedRooms: string[],
+    selectedLighting: string[],
+    otherLighting: string,
+    packageValue: string,
+    selectedServices: string[],
+    imagensAdicionais: number,
+    videoAdicional: number,
+};

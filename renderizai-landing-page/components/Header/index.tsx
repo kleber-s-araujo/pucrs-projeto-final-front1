@@ -144,7 +144,8 @@ const Header = () => {
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
             
-            { /* <ThemeToggler /> */}
+          <Link href={"/autenticacao/login"}>Login</Link>
+          <Link href={"/autenticacao/cadastro"}>Cadastro</Link>
 
             <Link
               href="/simulacao"

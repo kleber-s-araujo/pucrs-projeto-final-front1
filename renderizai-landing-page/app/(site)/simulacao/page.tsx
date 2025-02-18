@@ -6,6 +6,8 @@ import areaData from "./areaData";
 import { Check } from 'lucide-react';
 import lightingOptions from "./iluminacaoData";
 import aditionalData from "./aditionalData";
+import { useRouter } from 'next/navigation';
+import { Requisicao } from "@/types/requisicao";
 
 const Simulacao: React.FC = () => {
 
@@ -172,18 +174,17 @@ const Simulacao: React.FC = () => {
     };
 
     /* Validations */
-    const [resultVal, setResultVal] = useState<number>(0.00);
     const [error1, setError1] = useState<string>('');
     const [error2, setError2] = useState<string>('');
     const [error3, setError3] = useState<string>('');
     const checkInputs = (step: number): boolean => {
-        
+
         if (step == 1) {
             if (nome == '') {
                 setError1("Informar o Nome do Projeto!");
                 return false;
             }
-            else if ( ( radioValue == 'option1' && m2Interior == '' ) || ( radioValue == 'option2' &&  ( m2Edificacao == '' || m2Terreno == '' ) ) ) {
+            else if ((radioValue == 'option1' && m2Interior == '') || (radioValue == 'option2' && (m2Edificacao == '' || m2Terreno == ''))) {
                 setError1("Informar o a metragem quadrada do Projeto!");
                 return false;
             }
@@ -192,11 +193,11 @@ const Simulacao: React.FC = () => {
                 return false;
             }
         }
-        else if (step == 2 && selectedRooms.length == 0 ) {
+        else if (step == 2 && selectedRooms.length == 0) {
             setError2("Selecionar ao menos um Ambiente!");
             return false;
         }
-        else if (step == 3 && selectedLighting.length == 0 ) {
+        else if (step == 3 && selectedLighting.length == 0) {
             setError3("Selecionar ao menos uma Iluminação!");
             return false;
         }
@@ -208,32 +209,33 @@ const Simulacao: React.FC = () => {
     };
 
     const doCalculation = () => {
-
-        //Valor Base
-        const baseVal = packageValue == 'basic' ? 350 : packageValue == 'standard' ? 600 : 800;
-
-        //Valor por m²
-        const m2val = radioValue == 'option1' ? ( parseInt(m2Interior, 10) * 4.47 ) : 
-            ( parseInt(m2Edificacao,10) * 3.50 + parseInt(m2Edificacao,10) * 2,27 );
-
-        //Ambientes        
-        var adtAmb = 0;
-        if ( packageValue == 'basic' ) {
-            if ( selectedRooms.length > 1 )
-                adtAmb = (selectedRooms.length - 1) * 255.77;
-        }
-        
-        const result = baseVal + m2val + adtAmb;
-        setResultVal(result);
-    }   
-
-    const CurrencyFormatter = (amount: number) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-        }).format(amount);
+        navigateToDetails();        
     }
-    
+
+    const router = useRouter();    
+    const navigateToDetails = () => {
+
+        const params: Requisicao = {
+            nome: nome,            
+            radioValue: radioValue,
+            m2Interior: m2Interior ? parseInt(m2Interior, 10) : 0,
+            m2Edificacao: m2Edificacao ? parseInt(m2Edificacao, 10): 0,
+            m2Terreno: m2Terreno ? parseInt(m2Terreno,10) : 0,
+            mensagem: mensagem,
+            selectedRooms: selectedRooms,
+            selectedLighting: selectedLighting,
+            otherLighting: otherLighting,
+            packageValue: packageValue,
+            selectedServices: selectedServices,
+            imagensAdicionais: imagensAdicionais ? parseInt(imagensAdicionais) : 0,
+            videoAdicional: videoAdicional ? parseInt(videoAdicional) : 0,           
+        };
+
+        localStorage.setItem('navigationData', JSON.stringify(params));
+        router.push(`/simulacao/resultado`);
+
+    };
+
     return (
 
         <>
@@ -363,7 +365,7 @@ const Simulacao: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        { error1 !== '' &&
+                                        {error1 !== '' &&
 
                                             <div className="flex w-full border-l-6 border-[#F87171] bg-[#F87171] bg-opacity-[15%] px-4 py-4 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30">
                                                 <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
@@ -457,7 +459,7 @@ const Simulacao: React.FC = () => {
                                             </CardContent>
                                         </Card>
 
-                                        { error2 !== '' &&
+                                        {error2 !== '' &&
 
                                             <div className="flex w-full border-l-6 border-[#F87171] bg-[#F87171] bg-opacity-[15%] px-4 py-4 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30">
                                                 <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
@@ -583,7 +585,7 @@ const Simulacao: React.FC = () => {
                                             </CardContent>
                                         </Card>
 
-                                        { error3 !== '' &&
+                                        {error3 !== '' &&
 
                                             <div className="flex w-full border-l-6 border-[#F87171] bg-[#F87171] bg-opacity-[15%] px-4 py-4 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30">
                                                 <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
@@ -643,7 +645,7 @@ const Simulacao: React.FC = () => {
                                                     <li key={1} className="p-2 rounded-md text-gray-700">• 5 Imagens</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Qualidade Standard</li>
                                                     <li key={2} className="p-2 rounded-md text-gray-700">• Até 2 Ambientes</li>
-                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 4 tipos de Iluminação</li>
+                                                    <li key={2} className="p-2 rounded-md text-gray-700">• Até 3 tipos de Iluminação</li>
                                                 </ul>
                                             </div>
 
@@ -784,32 +786,11 @@ const Simulacao: React.FC = () => {
                 </div>
             </section>
 
-            <section id="calculation" className={`w-full z-[99] lg:pt-25 xl:pt-30 transition-opacity duration-500 ease-in-out ${!isVisible ? 'opacity-100 -mt-90 -pt-10' : 'opacity-0 z-[1] absolute top-0 left-0'}`}>
-
-                <div className="w-full mx-auto max-w-c-1500 px-4 md:px-8 xl:px-0 -mt-10">
-                    <SectionHeader
-                        headerInfo={{
-                            title: "investimento",
-                            subtitle: "Investimento na valorização do seu projeto e no seu portifólio",
-                            description: `OBS: Este valor pode sofrer uma leve variação após a validação por um dos nosso especialistas.`,
-                        }}
-                    />
-                </div>
-
-                <div className="w-full mx-auto max-w-c-1500 px-4 md:px-8 xl:px-0 mt-10">
-                    <h1 className="text-center mb-4 text-7xl font-bold text-yellow">
-                        { CurrencyFormatter(resultVal) } 
-                    </h1>
-                </div>
-
-
-            </section>
-
             <section id="control" className={`pb-25 z-9999 lg:pb-25 xl:pb-30 px-16 `}>
 
                 <div className="w-full mx-auto max-w-c-1315 px-4 md:px-8 xl:px-0">
 
-                    <div className="flex justify-between pt-4 mx-10">
+                    <div className={`flex justify-between pt-4 mx-10 `}>
 
                         <button
                             type="button"

@@ -1,12 +1,16 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Hero = () => {
+  
+  const router = useRouter(); 
   const [email, setEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    router.push('/simulacao');
   };
 
   return (
