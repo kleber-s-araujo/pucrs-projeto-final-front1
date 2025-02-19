@@ -1,21 +1,75 @@
 "use client";
+import clientService from "@/services/cliente";
+import { Cliente, tipo } from "@/types/cliente";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 
 const Signup = () => {
-  const [data, setData] = useState({
-    firstName: "",
-    lastName: "",
+
+  const [cliente, setCliente] = useState<Cliente>({
+    id: 0,
+    nome: "",
     email: "",
-    password: "",
+    senha: "",
+    tipo: 0,
+    dataRegistro: new Date(),
+    fotoPerfil: ""
   });
+
+  const [tipos, setTipos] = useState<[tipo]>([{
+    id: 1,
+    lang: "",
+    descricao: "",
+  }]);
+
+  const handleChangeSelect = (event: any) => {
+    const selected: tipo | undefined = tipos.find((tipo) => tipo.descricao === event.target.value);
+    if (selected !== undefined)
+      setCliente({ ...cliente, ['tipo']: selected.id })
+  };
+
+  const createClient = async (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+
+    event.preventDefault();
+
+    try {
+
+      await clientService.criaCliente(cliente).then((response) => {
+
+        if (response.status == 200) {
+
+        }
+
+        console.log("Dados Cliente:", cliente);
+        console.log("Resposta:", response);
+
+      });
+
+    } catch (error) {
+      console.log("Erro ao Criar Cliente", error);
+    }
+
+  };
+
+  useEffect(() => {
+
+    clientService.getTipos().then((response) => {
+
+      if (response.status == 200) {
+        const tipos = response.data.tipoCliente;
+        setTipos(tipos);
+      }
+
+    });
+
+  }, []);
 
   return (
     <>
       {/* <!-- ===== SignUp Form Start ===== --> */}
-      <section className="pb-12.5 pt-32.5 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
+      <section className="pb-12.5 pt-32.5 lg:pb-25 lg:pt-25 xl:pb-10 xl:pt-30">
         <div className="relative z-1 mx-auto max-w-c-1016 px-7.5 pb-7.5 pt-10 lg:px-15 lg:pt-15 xl:px-20 xl:pt-20">
           <div className="absolute left-0 top-0 -z-1 h-2/3 w-full rounded-lg bg-gradient-to-t from-transparent to-[#dee7ff47] dark:bg-gradient-to-t dark:to-[#252A42]"></div>
           <div className="absolute bottom-17.5 left-0 -z-1 h-1/3 w-full">
@@ -55,6 +109,7 @@ const Signup = () => {
               Crie sua Conta
             </h2>
 
+            { /*
             <div className="flex items-center gap-8">
               <button
                 aria-label="signup with google"
@@ -96,7 +151,6 @@ const Signup = () => {
                 Conecte-se com Google
               </button>
               
-              { /*
               <button
                 aria-label="signup with github"
                 className="text-body-color dark:text-body-color-dark dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none"
@@ -115,62 +169,70 @@ const Signup = () => {
                 Signup with Github
               </button>
 
-              */ }
-
             </div>
+            
 
             <div className="mb-10 flex items-center justify-center">
               <span className="dark:bg-stroke-dark hidden h-[1px] w-full max-w-[200px] bg-stroke dark:bg-strokedark sm:block"></span>
               <p className="text-body-color dark:text-body-color-dark w-full px-5 text-center text-base">
-                Ou, registre-se com seu email
+                Registre-se com seu email
               </p>
               <span className="dark:bg-stroke-dark hidden h-[1px] w-full max-w-[200px] bg-stroke dark:bg-strokedark sm:block"></span>
             </div>
+            */ }
 
-            <form>
+            <form onSubmit={createClient}>
               <div className="mb-7.5 flex flex-col gap-7.5 lg:mb-12.5 lg:flex-row lg:justify-between lg:gap-14">
                 <input
-                  name="firstName"
+                  name="nome"
                   type="text"
+                  required
                   placeholder="Nome"
-                  value={data.firstName}
+                  value={cliente.nome}
                   onChange={(e) =>
-                    setData({ ...data, [e.target.name]: e.target.value })
+                    setCliente({ ...cliente, [e.target.name]: e.target.value })
                   }
                   className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                 />
 
-                <input
-                  name="lastName"
-                  type="text"
-                  placeholder="Sobrenome"
-                  value={data.lastName}
-                  onChange={(e) =>
-                    setData({ ...data, [e.target.name]: e.target.value })
-                  }
-                  className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                />
+                <select className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
+                  id="capacidade"
+                  name="capacidade"
+                  required
+                  onChange={handleChangeSelect}
+                  defaultValue={cliente.tipo}>
+
+                  {tipos.map((tipo) => (
+                    <option key={tipo.id} value={tipo.descricao} >
+                      {tipo.descricao}
+                    </option>
+                  ))}
+
+                </select>
+
               </div>
 
               <div className="mb-7.5 flex flex-col gap-7.5 lg:mb-12.5 lg:flex-row lg:justify-between lg:gap-14">
                 <input
                   name="email"
                   type="email"
+                  required
                   placeholder="Email"
-                  value={data.email}
+                  value={cliente.email}
                   onChange={(e) =>
-                    setData({ ...data, [e.target.name]: e.target.value })
+                    setCliente({ ...cliente, [e.target.name]: e.target.value })
                   }
                   className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                 />
 
                 <input
-                  name="password"
+                  name="senha"
                   type="password"
+                  required
                   placeholder="Senha"
-                  value={data.password}
+                  value={cliente.senha}
                   onChange={(e) =>
-                    setData({ ...data, [e.target.name]: e.target.value })
+                    setCliente({ ...cliente, [e.target.name]: e.target.value })
                   }
                   className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
                 />
@@ -183,7 +245,7 @@ const Signup = () => {
                     type="checkbox"
                     className="peer sr-only"
                   />
-                  <span className="border-gray-300 bg-gray-100 text-blue-600 dark:border-gray-600 dark:bg-gray-700 group mt-1 flex h-5 min-w-[20px] items-center justify-center rounded peer-checked:bg-primary">
+                  <span className="border-gray-300 bg-gray-100 text-blue-600 dark:border-gray-600 dark:bg-gray-700 group  flex h-5 min-w-[20px] items-center justify-center rounded peer-checked:bg-primary">
                     <svg
                       className="opacity-0 peer-checked:group-[]:opacity-100"
                       width="10"
@@ -202,7 +264,7 @@ const Signup = () => {
                   </span>
                   <label
                     htmlFor="default-checkbox"
-                    className="flex max-w-[425px] cursor-pointer select-none  pl-3"
+                    className="flex max-w-[425px] cursor-pointer select-none pl-3"
                   >
                     Me mantenha conectado
                   </label>

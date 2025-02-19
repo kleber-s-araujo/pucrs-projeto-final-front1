@@ -1,17 +1,15 @@
-import Signin from "@/components/Auth/Signin";
 import { Metadata } from "next";
+import ClientPage from "./ClientPage";
 
 export const metadata: Metadata = {
   title: "Renderizaí | Plataforma de Renderização",
   description: "Plataforma de Renderizaçãoes e Design de Interiores",
 };
 
-const SigninPage = () => {
+export default function Home() {
   return (
-    <>
-      <Signin />
-    </>
+    <main>
+      <ClientPage />
+    </main>
   );
-};
-
-export default SigninPage;
+}

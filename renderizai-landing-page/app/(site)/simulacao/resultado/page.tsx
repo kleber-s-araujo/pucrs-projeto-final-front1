@@ -4,7 +4,6 @@ import { Requisicao } from '@/types/requisicao';
 import { useRouter } from 'next/navigation';
 import Loader from "@/components/Common/Loader";
 import React, { useEffect, useState } from 'react';
-import { DatabaseBackup } from 'lucide-react';
 
 const ResultPage: React.FC = () => {
 

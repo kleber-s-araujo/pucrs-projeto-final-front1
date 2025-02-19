@@ -2,9 +2,8 @@ import Signup from "@/components/Auth/Signup";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign Up Page - Solid SaaS Boilerplate",
-  description: "This is Sign Up page for Startup Pro",
-  // other metadata
+  title: "Renderizaí | Plataforma de Renderização",
+  description: "Plataforma de Renderizaçãoes e Design de Interiores",
 };
 
 export default function Register() {
