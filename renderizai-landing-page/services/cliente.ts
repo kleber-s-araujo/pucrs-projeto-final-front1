@@ -39,10 +39,20 @@ const updateClientImage = async (id: number, image: File) => {
     return response;
 }
 
+const getImageURL = async (imagename: string) => { 
+    return http.get<any>(`/cliente/image/${imagename}`);
+}
+
+const getRequisicoes = async (idCliente: number) => {
+    return http.get<any>(`/requisicao/cliente/${idCliente}`);
+}
+
 const clientService = {
     doLogin,
     getTipos,    
     criaCliente,
+    getImageURL,
+    getRequisicoes,
     updateClientImage
 }
 

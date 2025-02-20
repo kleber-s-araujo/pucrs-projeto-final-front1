@@ -25,7 +25,7 @@ const Signin = () => {
         if (response.status == 200) {
             
             localStorage.setItem("auth-token", response.data.session);
-            localStorage.setItem("cliente", JSON.stringify(response.data.cliente));
+            localStorage.setItem("cliente", JSON.stringify(response.data.cliente));            
             router.push('/portaldocliente');
         }
         
