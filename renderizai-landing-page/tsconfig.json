@@ -36,7 +36,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "components/DetailPage/index.tsx.bkp"  ],
   "exclude": [
     "node_modules"
   ]

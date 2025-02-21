@@ -1,5 +1,6 @@
 import http from '@/app/http-common';
 import { Cliente } from '@/types/cliente';
+import { RequisicoesData } from '@/types/requisicao';
 import axios from 'axios';
 
 const getTipos = () => {
@@ -47,12 +48,33 @@ const getRequisicoes = async (idCliente: number) => {
     return http.get<any>(`/requisicao/cliente/${idCliente}`);
 }
 
+const createRequisicao = async ( requisicao: RequisicoesData ) => {
+    const body = requisicao;
+    return http.post<any>('/requisicao', body);
+}
+
+const getMensagens = async ( idCliente: number ) => {
+    return http.get<any>(`/requisicao/mensagens/${idCliente}`);
+}
+
+const postMessage = async ( idRequisicao: number, enviadoPor: number, mensagem: string ) => {
+    const body = {
+        idRequisicao,
+        enviadoPor,
+        mensagem
+    };
+    return http.post<any>('/requisicao/mensagem', body);
+}
+
 const clientService = {
     doLogin,
     getTipos,    
     criaCliente,
     getImageURL,
+    postMessage,
+    getMensagens,    
     getRequisicoes,
+    createRequisicao,
     updateClientImage
 }
 

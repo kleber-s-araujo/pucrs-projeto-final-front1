@@ -1,15 +1,19 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Card";
 import SectionHeader from "@/components/Common/SectionHeader";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import areaData from "./areaData";
 import { Check } from 'lucide-react';
 import lightingOptions from "./iluminacaoData";
 import aditionalData from "./aditionalData";
-import { useRouter } from 'next/navigation';
-import { Requisicao } from "@/types/requisicao";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Requisicao, RequisicoesData } from "@/types/requisicao";
+import { Cliente } from "@/types/cliente";
 
 const Simulacao: React.FC = () => {
+
+    const router = useRouter();  
+    const [cliente, setCliente] = useState<Cliente | null>(null);
 
     /* Seletor Multi-Step */
     const [step, setStep] = useState(1);
@@ -22,7 +26,6 @@ const Simulacao: React.FC = () => {
 
         if (!checkInputs(step))
             return;
-
 
         if (newStep == totalSteps) {
             newStep = step + 1;
@@ -107,7 +110,7 @@ const Simulacao: React.FC = () => {
 
     /* Seção 1: Dados do Projeto */
     const [nome, setNome] = useState<string>('');
-    const [radioValue, setRadioValue] = useState<string>('option1');
+    const [radioValue, setRadioValue] = useState<string>('Interiores');
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRadioValue(event.target.value);
     };
@@ -115,7 +118,6 @@ const Simulacao: React.FC = () => {
     const [m2Edificacao, setM2Edificacao] = useState<string>('');
     const [m2Terreno, setM2Terreno] = useState<string>('');
     const [mensagem, setMensagem] = useState<string>('');
-
 
     /* Seção 2: Ambientes */
     const [selectedRooms, setSelectedRooms] = useState<string[]>([]);
@@ -184,7 +186,7 @@ const Simulacao: React.FC = () => {
                 setError1("Informar o Nome do Projeto!");
                 return false;
             }
-            else if ((radioValue == 'option1' && m2Interior == '') || (radioValue == 'option2' && (m2Edificacao == '' || m2Terreno == ''))) {
+            else if ((radioValue == 'Interiores' && m2Interior == '') || (radioValue == 'Arquitetônico' && (m2Edificacao == '' || m2Terreno == ''))) {
                 setError1("Informar o a metragem quadrada do Projeto!");
                 return false;
             }
@@ -211,30 +213,61 @@ const Simulacao: React.FC = () => {
     const doCalculation = () => {
         navigateToDetails();        
     }
-
-    const router = useRouter();    
+   
     const navigateToDetails = () => {
 
-        const params: Requisicao = {
-            nome: nome,            
-            radioValue: radioValue,
-            m2Interior: m2Interior ? parseInt(m2Interior, 10) : 0,
+        const params: RequisicoesData = {
+            id: 0,
+            idCliente: cliente ? cliente.id : 0,
+            titulo: nome,
+            descricao: mensagem,
+            dataRegistro: new Date(),
+            status: "",
+            prioridade: "",
+            pacote: packageValue,
+            tipoProjeto: radioValue,
+            proporcao: "",
+            m2Interno: m2Interior ? parseInt(m2Interior, 10) : 0,
             m2Edificacao: m2Edificacao ? parseInt(m2Edificacao, 10): 0,
             m2Terreno: m2Terreno ? parseInt(m2Terreno,10) : 0,
-            mensagem: mensagem,
-            selectedRooms: selectedRooms,
-            selectedLighting: selectedLighting,
-            otherLighting: otherLighting,
-            packageValue: packageValue,
-            selectedServices: selectedServices,
+            ambientes: selectedRooms,
+            iluminacoes: selectedLighting,
+            outraIluminacao: otherLighting,
+            servicosAdicionais: selectedServices,
             imagensAdicionais: imagensAdicionais ? parseInt(imagensAdicionais) : 0,
-            videoAdicional: videoAdicional ? parseInt(videoAdicional) : 0,           
+            tempoVideo: videoAdicional ? parseInt(videoAdicional) : 0,
+            valor: 0
         };
+        
+        router.push(`/simulacao/resultado?requisicao=${ JSON.stringify(params) }`);
 
-        localStorage.setItem('navigationData', JSON.stringify(params));
-        router.push(`/simulacao/resultado`);
+        //localStorage.setItem('navigationData', JSON.stringify(params));
+        //router.push(`/simulacao/resultado`);
 
     };
+
+    /* Quando há parâmetros já preenchidos */
+    const searchParams = useSearchParams();
+    const encodedData = searchParams.get('requisicao')
+    const data = encodedData ? JSON.parse(decodeURIComponent(encodedData)) : null;
+    if( data != null )
+    {
+        
+    }
+
+    useEffect(() => {
+    
+        // Load client data
+        const storedCliente = localStorage.getItem("cliente");
+        if (storedCliente) {
+          try {
+            const parsedCliente = JSON.parse(storedCliente);
+            setCliente(parsedCliente);
+          } catch (error) {
+            console.error('Error parsing client data:', error);
+          }
+        }
+      }, []);
 
     return (
 
@@ -289,18 +322,18 @@ const Simulacao: React.FC = () => {
                                             <div className="flex">
                                                 <span className="flex items-center me-4"><b>Tipo de Projeto:</b></span>
                                                 <div className="flex items-center me-4">
-                                                    <input id="inline-checked-radio" type="radio" value="option1" checked={radioValue === 'option1'} onChange={handleRadioChange} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                    <input id="inline-checked-radio" type="radio" value="Interiores" checked={radioValue === 'Interiores'} onChange={handleRadioChange} name="inline-radio-group" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                     <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Interiores</label>
                                                 </div>
 
                                                 <div className="flex items-center me-4">
-                                                    <input id="inline-radio" type="radio" value="option2" name="inline-radio-group" checked={radioValue === 'option2'} onChange={handleRadioChange} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                    <input id="inline-radio" type="radio" value="Arquitetônico" name="inline-radio-group" checked={radioValue === 'Arquitetônico'} onChange={handleRadioChange} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                     <label className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Arquitetônico</label>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {radioValue === 'option1' && (
+                                        { radioValue === 'Interiores' && (
                                             <div className="mt-10 mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                                                 <div className="flex">
                                                     <span className="flex items-center me-4">M²: </span>
@@ -318,7 +351,7 @@ const Simulacao: React.FC = () => {
                                             </div>
                                         )}
 
-                                        {radioValue === 'option2' && (
+                                        {radioValue === 'Arquitetônico' && (
                                             <div className="mt-10 mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:gap-8">
                                                 <div className="flex">
                                                     <span className="w-50 flex items-center me-4">M² Edificação:</span>

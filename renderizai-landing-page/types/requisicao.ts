@@ -16,6 +16,7 @@ export type Requisicao = {
 
 export type RequisicoesData = {
     id: number,
+    idCliente: number,
     titulo: string,
     descricao: string,
     dataRegistro: Date,
@@ -28,7 +29,20 @@ export type RequisicoesData = {
     m2Terreno: number,
     proporcao: string,
     ambientes: string[],
-    servicosAdicionais: string[],
     iluminacoes: string[],
-    renderizador: string
+    outraIluminacao: string,
+    servicosAdicionais: string[],    
+    idRenderizador?: number,
+    renderizador?: string,
+    imagensAdicionais: number,
+    tempoVideo: number,
+    valor: number
+};
+
+export type Mensagem = {
+    idMensagem: number,
+    idRequisicao: number,
+    mensagem: string,
+    enviadoPor: number,
+    dataRegistro: Date,
 };

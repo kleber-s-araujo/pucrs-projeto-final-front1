@@ -5,11 +5,7 @@ import { Plus, Upload, X } from 'lucide-react';
 import clientService from "@/services/cliente";
 import Loader from "@/components/Common/Loader";
 import { RequisicoesData } from "@/types/requisicao";
-import { useRouter } from "next/router";
-
-interface RequisicaoDataInt {
-    req: RequisicoesData
-}
+import { useRouter } from "next/navigation";
 
 const ClientPage: React.FC = () => {
 
@@ -38,7 +34,6 @@ const ClientPage: React.FC = () => {
         if (!file) return;
 
         const reader = new FileReader();
-
         reader.onloadend = async () => {
         
             const imageResult = reader.result as string;
@@ -72,15 +67,14 @@ const ClientPage: React.FC = () => {
         }
     }, []);
 
-    const openRequisition = useCallback((id: number) => {
+    const openRequisition = (id: number) => {
+        
         //router.push(`/portaldocliente/detalhes/${id}`);
-        router.push({
-            pathname: '/portaldocliente/detalhes',
-            query: {
-                req: JSON.stringify(requisitions[id])
-            },
-        });
-    }, [router]);
+        console.log(requisitions);
+        debugger        
+        router.push(`/portaldocliente/detalhes?requisicao=${ JSON.stringify(requisitions[id]) }`);
+
+    };
 
     // Load initial client data
     useEffect(() => {
@@ -92,14 +86,14 @@ const ClientPage: React.FC = () => {
 
     // Load tipos, profile image, and requisitions
     useEffect(() => {
+
         const loadData = async () => {
             try {
                 if (cliente.id === 0) return;
 
-                const [tiposResponse, imageResponse, requisicoesResponse] = await Promise.all([
+                const [tiposResponse, imageResponse] = await Promise.all([
                     !tipoCliente ? clientService.getTipos() : null,
-                    !profileImage ? clientService.getImageURL(cliente.fotoPerfil) : null,
-                    requisitions.length === 0 ? clientService.getRequisicoes(cliente.id) : null
+                    !profileImage ? clientService.getImageURL(cliente.fotoPerfil) : null
                 ]);
 
                 if (tiposResponse) {
@@ -115,12 +109,13 @@ const ClientPage: React.FC = () => {
                     setProfileImage(imageResponse.data.imageUrl);
                 }
 
+                const requisicoesResponse = await clientService.getRequisicoes(cliente.id);
                 if (requisicoesResponse) {
                     const requisicoes: RequisicoesData[] = requisicoesResponse.data.map(element => ({
                         id: element.id,
                         titulo: element.titulo,
                         descricao: element.descricao,
-                        dataRegistro: element.data_registro,
+                        dataRegistro: element.dataRegistro,
                         status: element.status,
                         prioridade: element.prioridade,
                         pacote: element.pacote,
@@ -129,13 +124,15 @@ const ClientPage: React.FC = () => {
                         m2Edificacao: element.m2Edificacao,
                         m2Terreno: element.m2Terreno,
                         proporcao: element.proporcao,
-                        ambientes: element.ambientes,
-                        servicosAdicionais: element.servicosAdicionais,
-                        iluminacoes: element.iluminacoes,
-                        renderizador: element.renderizador
+                        ambientes: JSON.parse(element.ambientes),
+                        servicosAdicionais: JSON.parse(element.servicosAdicionais),
+                        iluminacoes: JSON.parse(element.iluminacoes),
+                        renderizador: element.renderizador,
+                        valor: element.valor
                     }));
                     setRequisitions(requisicoes);
                 }
+
             } catch (error) {
                 console.error('Error loading data:', error);
             } finally {
@@ -144,7 +141,8 @@ const ClientPage: React.FC = () => {
         };
 
         loadData();
-    }, [cliente.id, cliente.tipo, cliente.fotoPerfil, tipoCliente, profileImage]);
+
+    }, [cliente.id, cliente.tipo, cliente.fotoPerfil, tipoCliente, profileImage, requisitions]);
 
     return (
         <section className="pb-12.5 pt-10 lg:pb-25 lg:pt-25 xl:pb-10 xl:pt-25">
@@ -190,12 +188,12 @@ const ClientPage: React.FC = () => {
                                                 <th className="p-4 text-left text-sm font-medium text-gray-600">Título</th>
                                                 <th className="p-4 text-left text-sm font-medium text-gray-600">Data de Criação</th>
                                                 <th className="p-4 text-left text-sm font-medium text-gray-600">Status</th>
-                                                <th className="p-4 text-left text-sm font-medium text-gray-600">Prioridade</th>
+                                                <th className="p-4 text-left text-sm font-medium text-gray-600">Investimento</th>
                                                 <th className="p-4 text-left text-sm font-medium text-gray-600"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {requisitions.map((req, index) => (
+                                            { requisitions.map((req, index) => (
                                                 <tr
                                                     key={req.id}
                                                     onClick={() => openRequisition(index)}
@@ -210,8 +208,8 @@ const ClientPage: React.FC = () => {
                                                         </span>
                                                     </td>
                                                     <td className="p-4">
-                                                        <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(req.status)}`}>
-                                                            {req.status}
+                                                        <span className={`px-3`}>
+                                                            {req.valor}
                                                         </span>
                                                     </td>
                                                     <td>
