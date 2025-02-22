@@ -6,7 +6,6 @@ import { Mensagem, RequisicoesData } from '@/types/requisicao';
 import clientService from '@/services/cliente';
 import { Cliente } from '@/types/cliente';
 import { Arquivo } from '@/types/arquivo';
-import Loader from '../Common/Loader';
 import LoaderMini from '../Common/LoaderMini';
 
 const DetailComponent = () => {
@@ -135,15 +134,35 @@ const DetailComponent = () => {
         });
     };
 
-    const downloadFile = (file: File) => {
-        const url = URL.createObjectURL(file);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+    const changeStatus = () => {
+        alert("Alterar Status...");
+    }
+
+    const downloadFile = async (file: string) => {
+
+        clientService.genURLArquivo(data.id, file).then(async (response) => {
+
+            if (response.status == 200)
+            {
+                //const url = URL.createObjectURL(file);
+                //const res = await fetch(response.data.url);
+                //const blob = await res.blob();
+                //const blobUrl = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = response.data.url;
+                a.download = file;
+                a.style.display = 'none';
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.setAttribute('type', 'application/octet-stream');
+
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                //window.URL.revokeObjectURL(blobUrl);   
+            }
+        });        
     };
 
     useEffect(() => {
@@ -224,7 +243,7 @@ const DetailComponent = () => {
             <div className="bg-white rounded-xl py-6 px-10 border shadow-sm space-y-6 mb-4">
                 <ol className="lg:flex justify-beteen items-center w-full space-y-4 lg:space-y-0 lg:space-x-4">
                     <li className="relative ">
-                        <a href="https://pagedone.io/" className="flex items-center font-medium w-full  ">
+                        <a href="#" onClick={changeStatus} className="flex items-center font-medium w-full  ">
                             <span className="w-6 h-6 bg-blue-500 border border-transparent rounded-full flex justify-center items-center mr-2 text-sm text-white lg:w-8 lg:h-8"> 1 </span>
                             <div className="block">
                                 <h4 className="text-base text-blue-500">Render Solicitado</h4>
@@ -325,7 +344,7 @@ const DetailComponent = () => {
                             <div className="flex items-center gap-2">
                                 <Calendar size={18} className="text-gray-500" />
                                 <span className="text-gray-600"><b>Data de Criação:</b></span>
-                                <span className="font-medium">{requisition.dataRegistro.toString().substring(0, 10)}</span>
+                                <span className="font-medium">{requisition.dataRegistro.toString()}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Square size={18} className="text-gray-500" />
@@ -362,7 +381,7 @@ const DetailComponent = () => {
                                     <div key={index} className="bg-gray-50 rounded-lg p-3">
                                         <p className="text-gray-700">{msg.mensagem}</p>
                                         <span className="mt-6 text-xs text-gray-500">
-                                            {new Date(msg.dataRegistro).toLocaleDateString()}
+                                            {new Date(msg.dataRegistro).toLocaleString()}
                                         </span>
                                         <br />
                                         <span className="text-xs text-gray-500">
@@ -486,7 +505,7 @@ const DetailComponent = () => {
                                     <div className="flex items-center gap-2">
                                         <button
                                             className="p-2 hover:bg-gray-200 rounded-full transition duration-150"
-                                            onClick={() => console.log("Download: ", file.nome)}
+                                            onClick={() => downloadFile(file.nome)}
                                         >
                                             <Download size={18} className="text-gray-600" />
                                         </button>
@@ -562,7 +581,7 @@ const DetailComponent = () => {
                 </div>
             )}
 
-            {uploading && (
+            { uploading && (
                 <div className="fixed inset-0 bg-blck bg-opacity-70 flex items-center justify-center p-4 z-99999">
                     <div className="grid grid-cols-4 bg-white rounded-lg shadow-xl w-full max-w-md py-6 items-center">
                         <div className="col-span-1"><LoaderMini /></div>

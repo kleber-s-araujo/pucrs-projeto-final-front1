@@ -95,6 +95,10 @@ const getArquivos = async ( requisicao: number ) => {
     }    
 }
 
+const genURLArquivo = async ( requisicao: number, filename: string ) => {
+    return http.get<any>(`/requisicao/req/${requisicao}/file/${filename}`);
+}
+
 const deletaArquivo = async ( requisicao: number, filename: string ) => {
     const body = { requisicao, fileName: filename };
     return http.delete<any>('/requisicao/file', { data: body });
@@ -110,6 +114,7 @@ const clientService = {
     getArquivos,
     getMensagens,    
     deletaArquivo,
+    genURLArquivo,
     getRequisicoes,
     createRequisicao,
     updateClientImage
