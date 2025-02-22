@@ -221,7 +221,7 @@ const DetailComponent = () => {
         <div className="min-h-screen mt-20 pt-12 bg-gray-50 px-40">
 
             { /* Status Stepper */}
-            <div className="bg-white rounded-xl p-6 border shadow-sm space-y-6 mb-4">
+            <div className="bg-white rounded-xl py-6 px-10 border shadow-sm space-y-6 mb-4">
                 <ol className="lg:flex justify-beteen items-center w-full space-y-4 lg:space-y-0 lg:space-x-4">
                     <li className="relative ">
                         <a href="https://pagedone.io/" className="flex items-center font-medium w-full  ">
