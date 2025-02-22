@@ -54,7 +54,12 @@ const createRequisicao = async ( requisicao: RequisicoesData ) => {
 }
 
 const getMensagens = async ( idCliente: number ) => {
-    return http.get<any>(`/requisicao/mensagens/${idCliente}`);
+    try {
+        const response = await http.get<any>(`/requisicao/mensagens/${idCliente}`);   
+        return response;
+    } catch (error) {
+        console.log("Mensagens não encontradas...")
+    }    
 }
 
 const postMessage = async ( idRequisicao: number, enviadoPor: number, mensagem: string ) => {
@@ -66,13 +71,45 @@ const postMessage = async ( idRequisicao: number, enviadoPor: number, mensagem: 
     return http.post<any>('/requisicao/mensagem', body);
 }
 
+const postArquivo = async ( requisicao: number, id: number, file: File ) => {    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('tipo', '1');
+    formData.append('sender', id.toString());
+    formData.append('filename', file.name);
+    formData.append('requisicao', requisicao.toString());
+    const response = await axios.post('http://127.0.0.1:3030/api/requisicao/file', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response;
+}
+
+const getArquivos = async ( requisicao: number ) => {
+    try {
+        const response = await http.get<any>(`/requisicao/files/req/${requisicao}`);   
+        return response;
+    } catch (error) {
+        console.log("Arquivos não encontradas...")
+    }    
+}
+
+const deletaArquivo = async ( requisicao: number, filename: string ) => {
+    const body = { requisicao, fileName: filename };
+    return http.delete<any>('/requisicao/file', { data: body });
+}
+
 const clientService = {
     doLogin,
     getTipos,    
     criaCliente,
     getImageURL,
     postMessage,
+    postArquivo,
+    getArquivos,
     getMensagens,    
+    deletaArquivo,
     getRequisicoes,
     createRequisicao,
     updateClientImage

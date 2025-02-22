@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageCircle, Send, Clock, Home, Calendar, Square, Info, Paperclip, X, Download, Upload, File } from 'lucide-react';
+import { MessageCircle, Send, Clock, Home, Calendar, Square, Info, Paperclip, X, Download, Upload, File, Delete, DeleteIcon, RemoveFormattingIcon, Trash, Trash2, CircleDollarSign, MessageCircleCodeIcon, MessageCircleCode, MessagesSquare, ActivityIcon, Option, Menu } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mensagem, RequisicoesData } from '@/types/requisicao';
 import clientService from '@/services/cliente';
@@ -17,7 +17,7 @@ const DetailComponent = () => {
     const [uploading, setUploading] = useState(false);
 
     const [cliente, setCliente] = useState<Cliente | null>(null);
-    
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const encodedData = searchParams.get('requisicao');
@@ -52,18 +52,18 @@ const DetailComponent = () => {
 
     const handleSendMessage = () => {
 
-        if ( message.trim()) {
+        if (message.trim()) {
             clientService.postMessage(requisition.id, cliente.id, message).then((response) => {
 
-                if ( response.status == 201 ) {                   
-                    setMessages([...messages, 
-                        {
-                            idMensagem: response.data.msgID,
-                            enviadoPor: cliente.id,
-                            mensagem: message,
-                            dataRegistro: new Date(),
-                            idRequisicao: requisition.id
-                        }]);
+                if (response.status == 201) {
+                    setMessages([...messages,
+                    {
+                        idMensagem: response.data.msgID,
+                        enviadoPor: cliente.id,
+                        mensagem: message,
+                        dataRegistro: new Date(),
+                        idRequisicao: requisition.id
+                    }]);
                     setMessage('');
                 }
 
@@ -74,15 +74,40 @@ const DetailComponent = () => {
     const [files, setFiles] = useState<Arquivo[]>([]);
     const fileInputRef = useRef(null);
 
+    const sendUploadFile = async (file: File) => {
+
+        setUploading(true);
+
+        try {
+
+            clientService.postArquivo(requisition.id, cliente?.id, file).then((response) => {
+
+                if (response.status == 201) {
+
+                    const newFiles: Arquivo = {
+                        nome: file.name,
+                        idRequisicao: requisition.id,
+                        tipo: 1,
+                        sender: cliente.id,
+                        dataRegistro: new Date() // response.data.dataRegistro
+                    }
+                    setFiles([...files, newFiles]);
+                }
+            });
+
+        } catch (error) {
+            console.log("Erro ao realizar upload", error.message);
+        }
+        finally {
+            setUploading(false);
+        }
+
+
+    }
+
     const handleFileUpload = (event) => {
         const uploadedFiles = event.target.files[0];
-        const newFiles: Arquivo = {
-            id: files.length + 1,
-            tipo: 1,
-            nome: uploadedFiles.name.toString(),
-            dataRegistro: new Date()
-        }
-        setFiles([...files, newFiles]);
+        sendUploadFile(uploadedFiles);
         event.target.value = null;
     };
 
@@ -95,17 +120,19 @@ const DetailComponent = () => {
         e.preventDefault();
         e.stopPropagation();
         const droppedFile = e.dataTransfer.files[0];
-        const newFiles: Arquivo = {
-            id: files.length + 1,
-            tipo: 1,
-            nome: droppedFile.name.toString(),
-            dataRegistro: new Date()
-        }
-        setFiles([...files, newFiles]);
+        sendUploadFile(droppedFile);
     };
 
     const removeFile = (fileId) => {
-        setFiles(files => files.filter((file, i) => i !== fileId));
+
+        clientService.deletaArquivo(data.id, files[fileId].nome).then((response) => {
+
+            if (response.status == 204) {
+                alert("Arquivo Removido!");
+                setFiles(files => files.filter((file, i) => i !== fileId));
+            }
+
+        });
     };
 
     const downloadFile = (file: File) => {
@@ -126,45 +153,135 @@ const DetailComponent = () => {
 
     useEffect(() => {
 
-        //Carrega Mensagens
-        clientService.getMensagens(data.id).then((response) => {
+        
+        try {
 
-            if (response.status == 200) {
-                
-                //setMessages([...messages, { text: message, timestamp: new Date() }]);
-                const Mensagens: Mensagem[] = response.data.map(element => ({
-                    idMensagem: element.idMensagem,
-                    idRequisicao: element.idRequisicao,
-                    enviadoPor: element.enviadoPor,
-                    dataRegistro: element.dataRegistro,
-                    mensagem: element.mensagem
-                }));
+            //Carrega Mensagens
+            clientService.getMensagens(data.id).then((response) => {
 
-                setMessages(Mensagens);
-                console.log(response.data);
-            }
+                if (response && response.status == 200) {
 
-        });
+                    //setMessages([...messages, { text: message, timestamp: new Date() }]);
+                    const Mensagens: Mensagem[] = response.data.map(element => ({
+                        idMensagem: element.idMensagem,
+                        idRequisicao: element.idRequisicao,
+                        enviadoPor: element.enviadoPor,
+                        dataRegistro: element.dataRegistro,
+                        mensagem: element.mensagem
+                    }));
+
+                    setMessages(Mensagens);
+                    console.log(response.data);
+                }
+
+            });
+
+        } catch (error) {
+            console.log("Não encontrou mensagens...");
+        }
 
         const storedCliente = localStorage.getItem("cliente");
         if (storedCliente) {
+            try {
+                const parsedCliente = JSON.parse(storedCliente);
+                setCliente(parsedCliente);
+            } catch (error) {
+                console.error('Error parsing client data:', error);
+            }
+        };
+
         try {
-            const parsedCliente = JSON.parse(storedCliente);
-            setCliente(parsedCliente);
+
+            //Carrega Arquivos
+            clientService.getArquivos(data.id).then((response) => {
+
+                if (response && response?.status == 200) {
+
+                    const files: Arquivo[] = response.data.map(element => ({
+                        nome: element.nome,
+                        idRequisicao: element.idRequisicao,
+                        tipo: element.tipo,
+                        sender: element.sender,
+                        dataRegistro: element.dataRegistro
+                    }));
+                    setFiles(files);
+                }
+
+            });
+
         } catch (error) {
-            console.error('Error parsing client data:', error);
-        }
+            console.log("Não encontrou arquivos...");
         }
 
     }, []);
 
     return (
 
-        <div className="min-h-screen mt-25 pt-12 bg-gray-50">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div className="min-h-screen mt-20 pt-12 bg-gray-50 px-40">
+
+            { /* Status Stepper */}
+            <div className="bg-white rounded-xl p-6 border shadow-sm space-y-6 mb-4">
+                <ol className="lg:flex justify-beteen items-center w-full space-y-4 lg:space-y-0 lg:space-x-4">
+                    <li className="relative ">
+                        <a href="https://pagedone.io/" className="flex items-center font-medium w-full  ">
+                            <span className="w-6 h-6 bg-blue-500 border border-transparent rounded-full flex justify-center items-center mr-2 text-sm text-white lg:w-8 lg:h-8"> 1 </span>
+                            <div className="block">
+                                <h4 className="text-base text-blue-500">Render Solicitado</h4>
+                            </div>
+                            <svg className="w-5 h-5 ml-2 stroke-blue-500 sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li className="relative  ">
+                        <a className="flex items-center font-medium w-full  ">
+                            <span className="w-6 h-6 bg-gray-50 border border-gray-200 rounded-full flex justify-center items-center mr-3 text-sm  lg:w-8 lg:h-8">2</span>
+                            <div className="block">
+                                <h4 className="text-base text-waterloo">Solicitação em Análise</h4>
+                            </div>
+                            <svg className="w-5 h-5 ml-2 stroke-waterloo sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li className="relative  ">
+                        <a className="flex items-center font-medium w-full  ">
+                            <span className="w-6 h-6 bg-gray-50 border border-gray-200 rounded-full flex justify-center items-center mr-3 text-sm  lg:w-8 lg:h-8">3</span>
+                            <div className="block">
+                                <h4 className="text-base text-waterloo">Renderização em Desenvolvimento</h4>
+                            </div>
+                            <svg className="w-5 h-5 ml-2 stroke-waterloo sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li className="relative  ">
+                        <a className="flex items-center font-medium w-full  ">
+                            <span className="w-6 h-6 bg-gray-50 border border-gray-200 rounded-full flex justify-center items-center mr-3 text-sm  lg:w-8 lg:h-8">4</span>
+                            <div className="block">
+                                <h4 className="text-base text-waterloo">Aprovação Solicitada</h4>
+                            </div>
+                            <svg className="w-5 h-5 ml-2 stroke-waterloo sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
+                            </svg>
+                        </a>
+                    </li>
+                    <li className="relative  ">
+                        <a className="flex items-center font-medium w-full  ">
+                            <span className="w-6 h-6 bg-gray-50 border border-gray-200 rounded-full flex justify-center items-center mr-3 text-sm  lg:w-8 lg:h-8">5</span>
+                            <div className="block">
+                                <h4 className="text-base text-waterloo">Finalizado</h4>
+                            </div>
+                        </a>
+                    </li>
+                </ol>
+            </div>
+
+            <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 ">
 
                 {/* Main Project Information */}
-                <div className="lg:col-span-2 bg-white rounded-xl shadow-md p-6 space-y-6">
+                <div className="lg:col-span-2 bg-white rounded-xl border shadow-sm p-6 space-y-6 mb-20">
                     {/* Header */}
                     <div className="flex justify-between items-start">
                         <h1 className="text-2xl text-gray-700">
@@ -172,14 +289,13 @@ const DetailComponent = () => {
                         </h1>
                         <button
                             onClick={() => setShowDetails(true)}
-                            className="bg-black hover:bg-blackho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
-                        >
+                            className="bg-black hover:bg-blackho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2">
                             <Info size={18} />
-                            Detalhes
                         </button>
                     </div>
 
                     {/* Status and Priority Badges */}
+                    { /* 
                     <div className="flex flex-wrap gap-4">
                         <div className="flex items-center gap-2">
                             <span className="text-gray-600"><b>Status:</b></span>
@@ -187,15 +303,16 @@ const DetailComponent = () => {
                                 {requisition.status}
                             </span>
                         </div>
-                        { /* 
+                        
                         <div className="flex items-center gap-2">
                             <span className="text-gray-600">Prioridade:</span>
                             <span className="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">
                                 Solicitada
                             </span>
                         </div>
-                        */ }
+                        
                     </div>
+                    */ }
 
                     {/* Project Details Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -232,126 +349,25 @@ const DetailComponent = () => {
                     </div>
 
                     <div className="border-t pt-6">
-                        <h2 className="text-lg font-medium text-gray-700 mb-4 flex items-center gap-2">
-                            <Paperclip size={20} />
-                            Arquivos
+
+                        <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                            <MessagesSquare size={20} />
+                            Mensagens
                         </h2>
 
-                        {/* Upload Area */}
-                        <div
-                            className="border-2 border-dashed border-gray-300 rounded-lg p-6 mb-4 text-center"
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                        >
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileUpload}
-                                className="hidden"
-                                multiple={false}
-                            />
-                            <div className="flex flex-col items-center gap-2">
-                                <Upload size={24} className="text-gray-400" />
-                                <p className="text-gray-600">
-                                    Arraste arquivos aqui ou{' '}
-                                    <button                                   
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="text-blue-600 hover:text-blue-700 font-medium"
-                                    >
-                                        selecione do computador
-                                    </button>
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    Suporta qualquer tipo de arquivo até 1MB
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Files List */}
-                        
-                            <div className="space-y-2">
-                                {files.map((file, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-between bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition duration-150"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <File size={20} className="text-gray-500" />
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-700">{file.nome}</p>
-                                                <p className="text-xs text-gray-500">
-                                                    { 
-                                                        file.tipo == 1 ? 'Arquivo de Projeto' : file.tipo == 2 ? 'Preview' : 'Render Final'
-                                                    } • {file.dataRegistro.toString().substring(0, 10)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                className="p-2 hover:bg-gray-200 rounded-full transition duration-150"
-                                                onClick={() => console.log("Download: ", file.nome)}
-                                            >
-                                                <Download size={18} className="text-gray-600" />
-                                            </button>
-                                            
-                                            <button
-                                                className="p-2 hover:bg-gray-200 rounded-full transition duration-150"
-                                                onClick={() => removeFile(index)}
-                                            >
-                                                <X size={18} className="text-gray-600" />
-                                            </button>
-                                            
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        
-                    </div>
-
-                </div>
-
-                {/* Right Sidebar */}
-                <div className="space-y-6">
-                    {/* Actions Card */}
-                    <div className="bg-white gap-4 rounded-xl shadow-md p-6">
-
-                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Ações</h2>
-
-                        <div className='flex justify-between gap-4'>
-                            <button
-                                onClick={() => setShowDetails(true)}
-                                className="w-full bg-black hover:bg-blackho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
-                            >
-                                <Info size={18} />
-                                Detalhes
-                            </button>
-                            <button
-                                onClick={() => setShowDetails(true)}
-                                className="w-full bg-primary hover:bg-primaryho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
-                            >
-                                <Info size={18} />
-                                Detalhes
-                            </button>
-                        </div>
-
-                    </div>
-
-                    {/* Messages Card */}
-                    <div className="bg-white rounded-xl shadow-md p-6">
-                        <h2 className="text-xl font-semibold text-gray-700 mb-4">Mensagens</h2>
                         <div className="space-y-4">
                             {/* Messages List */}
-                            <div className="h-64 overflow-y-auto space-y-3">
+                            <div className="h-max-64 overflow-y-auto space-y-3">
                                 {messages.map((msg, index) => (
                                     <div key={index} className="bg-gray-50 rounded-lg p-3">
                                         <p className="text-gray-700">{msg.mensagem}</p>
                                         <span className="mt-6 text-xs text-gray-500">
-                                            { new Date(msg.dataRegistro).toLocaleDateString() }
+                                            {new Date(msg.dataRegistro).toLocaleDateString()}
                                         </span>
                                         <br />
                                         <span className="text-xs text-gray-500">
-                                            Enviado 
-                                            { msg.enviadoPor == cliente?.id ? ' por Você' : ' pelo Renderizador' }
+                                            Enviado
+                                            {msg.enviadoPor == cliente?.id ? ' por Você' : ' pelo Renderizador'}
                                         </span>
                                     </div>
                                 ))}
@@ -374,6 +390,119 @@ const DetailComponent = () => {
                                 </button>
                             </div>
                         </div>
+
+                    </div>
+
+                </div>
+
+                {/* Right Sidebar */}
+                <div className="space-y-6">
+                    {/* Actions Card */}
+                    <div className="bg-white gap-4 rounded-xl border shadow-sm p-6">
+
+                        <h2 className="text-xl font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                            <Menu size={20} />
+                            Ações
+                        </h2>
+                        <div className='flex gap-4'>
+                            <button
+                                onClick={() => setShowDetails(true)}
+                                className="w-full border bg-white hover:bg-gray text-black font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
+                            >
+                                <Trash2 size={18} />
+                                Solicitar Cancelamento
+                            </button>
+                        </div>
+
+                        <div className='flex gap-4 mt-2'>
+                            <button
+                                onClick={() => setShowDetails(true)}
+                                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
+                            >
+                                <CircleDollarSign size={18} />
+                                Aprovar e Pagar
+                            </button>
+                        </div>
+
+
+                    </div>
+
+                    {/* Files Card */}
+                    <div className="bg-white rounded-xl border shadow-sm p-6">
+
+                        <h2 className="text-lg font-medium text-gray-700 mb-4 flex items-center gap-2">
+                            <Paperclip size={20} />
+                            Arquivos
+                        </h2>
+
+                        {/* Upload Area */}
+                        <div
+                            className="border-2 border-dashed border-gray-300 rounded-lg p-6 mb-4 text-center"
+                            onDragOver={handleDragOver}
+                            onDrop={handleDrop}
+                        >
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                className="hidden"
+                                multiple={false}
+                            />
+                            <div className="flex flex-col items-center gap-2">
+                                <Upload size={24} className="text-gray-400" />
+                                <p className="text-gray-600">
+                                    Arraste arquivos aqui ou{' '}
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="text-blue-600 hover:text-blue-700 font-medium"
+                                    >
+                                        selecione do computador
+                                    </button>
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    Suporta qualquer tipo de arquivo até 1MB
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Files List */}
+                        <div className="space-y-2">
+                            {files.map((file, index) => (
+                                <div
+                                    key={index}
+                                    className="flex items-center justify-between bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition duration-150"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <File size={20} className="text-gray-500" />
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-700">{file.nome}</p>
+                                            <p className="text-xs text-gray-500">
+                                                {
+                                                    file.tipo == 1 ? 'Arquivo de Projeto' : file.tipo == 2 ? 'Preview' : 'Render Final'
+                                                } • {file.dataRegistro.toString().substring(0, 10)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            className="p-2 hover:bg-gray-200 rounded-full transition duration-150"
+                                            onClick={() => console.log("Download: ", file.nome)}
+                                        >
+                                            <Download size={18} className="text-gray-600" />
+                                        </button>
+
+                                        <button
+                                            className="p-2 hover:bg-gray-200 rounded-full transition duration-150"
+                                            onClick={() => removeFile(index)}
+                                        >
+                                            <X size={18} className="text-gray-600" />
+                                        </button>
+
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -433,13 +562,13 @@ const DetailComponent = () => {
                 </div>
             )}
 
-            { uploading && (
-            <div className="fixed inset-0 bg-blck bg-opacity-70 flex items-center justify-center p-4 z-99999">
-                <div className="grid grid-cols-4 bg-white rounded-lg shadow-xl w-full max-w-md py-6 items-center">
-                    <div className="col-span-1"><LoaderMini /></div>
-                    <div className="col-span-3"><span>Upload do arquivo em andamento...</span></div>
+            {uploading && (
+                <div className="fixed inset-0 bg-blck bg-opacity-70 flex items-center justify-center p-4 z-99999">
+                    <div className="grid grid-cols-4 bg-white rounded-lg shadow-xl w-full max-w-md py-6 items-center">
+                        <div className="col-span-1"><LoaderMini /></div>
+                        <div className="col-span-3"><span>Upload do arquivo em andamento...</span></div>
+                    </div>
                 </div>
-            </div>
             )}
 
         </div>

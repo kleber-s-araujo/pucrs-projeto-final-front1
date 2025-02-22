@@ -1,6 +1,7 @@
 export type Arquivo = {
-    id: number,
-    tipo: number,
     nome: string,
+    idRequisicao: number,
+    tipo: number,
+    sender: number,    
     dataRegistro: Date
 };
