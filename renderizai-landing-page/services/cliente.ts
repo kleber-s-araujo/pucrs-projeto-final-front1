@@ -86,6 +86,14 @@ const postArquivo = async ( requisicao: number, id: number, file: File ) => {
     return response;
 }
 
+const getStatus = async ( requisicao: number ) => {
+    try {
+        return await http.get<any>(`/requisicao/status/${requisicao}`);  
+    } catch (error) {
+        console.log("Requisição não encontrada...");
+    }
+}
+
 const getArquivos = async ( requisicao: number ) => {
     try {
         const response = await http.get<any>(`/requisicao/files/req/${requisicao}`);   
@@ -107,6 +115,7 @@ const deletaArquivo = async ( requisicao: number, filename: string ) => {
 const clientService = {
     doLogin,
     getTipos,    
+    getStatus,
     criaCliente,
     getImageURL,
     postMessage,

@@ -1,13 +1,36 @@
 "use client";
+import { Cliente } from "@/types/cliente";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
+
+  const pathUrl = usePathname();
+  const [cliente, setCliente] = useState<Cliente | null>(null);
+
+   useEffect(() => {
+  
+      // Load client data
+      const storedCliente = localStorage.getItem("cliente");
+      if (storedCliente) {
+        try {
+          const parsedCliente = JSON.parse(storedCliente);
+          setCliente(parsedCliente);
+        } catch (error) {
+          console.error('Error parsing client data:', error);
+        }
+      }
+      
+    }, [pathUrl]);
+
   return (
     <>
       <footer className="border-t border-stroke bg-white dark:border-strokedark dark:bg-blacksection">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
           {/* <!-- Footer Top --> */}
+          { cliente?.nome == "" || cliente?.nome == undefined && (
           <div className="py-20 lg:py-25">
             <div className="flex flex-wrap gap-8 lg:justify-between lg:gap-0">
               <motion.div
@@ -177,6 +200,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
+          ) }
           {/* <!-- Footer Top --> */}
 
           {/* <!-- Footer Bottom --> */}
@@ -334,6 +358,7 @@ const Footer = () => {
               </ul>
             </motion.div>
           </div>
+          
           {/* <!-- Footer Bottom --> */}
         </div>
       </footer>

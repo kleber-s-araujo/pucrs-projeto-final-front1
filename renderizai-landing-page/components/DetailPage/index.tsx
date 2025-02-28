@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageCircle, Send, Clock, Home, Calendar, Square, Info, Paperclip, X, Download, Upload, File, Delete, DeleteIcon, RemoveFormattingIcon, Trash, Trash2, CircleDollarSign, MessageCircleCodeIcon, MessageCircleCode, MessagesSquare, ActivityIcon, Option, Menu } from 'lucide-react';
+import { MessageCircle, Send, Clock, Home, Calendar, Square, Info, Paperclip, X, Download, Upload, File, Delete, DeleteIcon, RemoveFormattingIcon, Trash, Trash2, CircleDollarSign, MessageCircleCodeIcon, MessageCircleCode, MessagesSquare, ActivityIcon, Option, Menu, Plus, PlusCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mensagem, RequisicoesData } from '@/types/requisicao';
 import clientService from '@/services/cliente';
@@ -19,34 +19,31 @@ const DetailComponent = () => {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const encodedData = searchParams.get('requisicao');
-    const data = encodedData ? JSON.parse(decodeURIComponent(encodedData)) : null;
-    if (data == null)
-        router.push('/');
-
+    
+    const [loadingData, setLoading] = useState(true);
     const [requisition, setRequisition] = useState<RequisicoesData>({
-        id: data.id,
-        idCliente: data.idCliente,
-        titulo: data.titulo,
-        descricao: data.descricao,
-        dataRegistro: data.dataRegistro,
-        status: data.status,
-        prioridade: data.prioridade,
-        pacote: data.pacote,
-        tipoProjeto: data.tipoProjeto,
-        m2Interno: data.m2Interno,
-        m2Edificacao: data.m2Edificacao,
-        m2Terreno: data.m2Terreno,
-        proporcao: data.proporcao,
-        ambientes: data.ambientes,
-        servicosAdicionais: data.servicosAdicionais,
-        iluminacoes: data.iluminacoes,
-        outraIluminacao: data.outraIluminacao,
-        idRenderizador: data.idRenderizador,
-        renderizador: data.renderizador,
-        imagensAdicionais: data.imagensAdicionais,
-        tempoVideo: data.tempoVideo,
-        valor: data.valor
+        id: 0,
+        idCliente: 0,
+        titulo: "",
+        descricao: "",
+        dataRegistro: new Date,
+        status: "",
+        prioridade: "",
+        pacote: "",
+        tipoProjeto: "",
+        m2Interno: 0,
+        m2Edificacao: 0,
+        m2Terreno: 0,
+        proporcao: "",
+        ambientes: [],
+        servicosAdicionais: [],
+        iluminacoes: [],
+        outraIluminacao: "",
+        idRenderizador: 0,
+        renderizador: "",
+        imagensAdicionais: 0,
+        tempoVideo: 0,
+        valor: 0
     });
 
     const handleSendMessage = () => {
@@ -134,8 +131,18 @@ const DetailComponent = () => {
         });
     };
 
-    const changeStatus = () => {
-        alert("Alterar Status...");
+    const changeStatus = (nextStatus: string) => {
+        //alert("Alterar Status para: " + nextStatus);
+        if (nextStatus == "aprovado" && requisition.status !== "aprovação")
+        {
+            alert(`Aprovação e Pagamento apenas disponível quando a solicitação de Renderização estiver em "Aprovação Solicitada"! `);
+            return;
+        }
+
+        if (nextStatus == "cancelado")
+        {
+            alert("Deseja realmente cancelar sua solicitação? Caso já tenha sido análisada será aplicada uma pequena multa...")
+        }
     }
 
     const downloadFile = async (file: string) => {
@@ -169,6 +176,35 @@ const DetailComponent = () => {
         // Este código será executado sempre que files mudar
         console.log('Files atualizados:', files);
     }, [files]);
+
+    const [currentStatus, setCurrentStatus] = useState({
+        status: 0,
+        descricao: ""
+    });
+
+    useEffect(() => {
+        // Este código será executado sempre questatus mudar
+        console.log('Status Atualizado:', currentStatus);
+    }, [currentStatus]);
+
+    useEffect(() => {
+        
+        setTimeout(() => setLoading(false), 1500);
+
+        const encodedData = searchParams.get('requisicao');
+        const data: RequisicoesData = encodedData ? JSON.parse(decodeURIComponent(encodedData)) : null;
+        if (data == null)
+            router.push('/');
+        setRequisition(data);
+
+        const status = clientService.getStatus(data.id).then((response) => {
+            if (response?.status == 200) {
+                //console.log(response.data.status[0]);
+                setCurrentStatus(response.data.status[0]);
+            }
+        });
+
+    }, []);
 
     useEffect(() => {
 
@@ -237,27 +273,27 @@ const DetailComponent = () => {
     return (
 
 
-        <div className="min-h-screen mt-20 pt-12 bg-gray-50 px-40">
+        <div className="min-h-screen mt-25 pt-12 bg-gray-50 px-40">
 
             { /* Status Stepper */}
             <div className="bg-white rounded-xl py-6 px-10 border shadow-sm space-y-6 mb-4">
                 <ol className="lg:flex justify-beteen items-center w-full space-y-4 lg:space-y-0 lg:space-x-4">
                     <li className="relative ">
                         <a href="#" onClick={changeStatus} className="flex items-center font-medium w-full  ">
-                            <span className="w-6 h-6 bg-blue-500 border border-transparent rounded-full flex justify-center items-center mr-2 text-sm text-white lg:w-8 lg:h-8"> 1 </span>
+                            <span className={`w-6 h-6 border ${ currentStatus.status == 1 ? 'bg-blue-500 border-transparent' : 'bg-gray-50 border-gray-200' }   rounded-full flex justify-center items-center mr-2 text-sm text-white lg:w-8 lg:h-8`}>1</span>
                             <div className="block">
-                                <h4 className="text-base text-blue-500">Render Solicitado</h4>
+                                <h4 className={`text-base ${ currentStatus.status == 1 ? 'text-blue-500' : 'text-waterloo' } `}>Render Solicitado</h4>
                             </div>
-                            <svg className="w-5 h-5 ml-2 stroke-blue-500 sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
+                            <svg className={`w-5 h-5 ml-2 ${ currentStatus.status == 1 ? 'stroke-blue-500' : 'stroke-waterloo'} sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg`}>
+                                <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke-width="1.6" strokeLinecap="round" />
                             </svg>
                         </a>
                     </li>
                     <li className="relative  ">
-                        <a className="flex items-center font-medium w-full  ">
+                        <a className="flex items-center font-medium w-full">
                             <span className="w-6 h-6 bg-gray-50 border border-gray-200 rounded-full flex justify-center items-center mr-3 text-sm  lg:w-8 lg:h-8">2</span>
                             <div className="block">
-                                <h4 className="text-base text-waterloo">Solicitação em Análise</h4>
+                                <h4 className={`text-base ${ currentStatus.status == 2 ? 'text-blue-500' : 'text-waterloo'} `}>Solicitação em Análise</h4>
                             </div>
                             <svg className="w-5 h-5 ml-2 stroke-waterloo sm:ml-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 18L9.67462 13.0607C10.1478 12.5607 10.3844 12.3107 10.3844 12C10.3844 11.6893 10.1478 11.4393 9.67462 10.9393L5 6M12.6608 18L17.3354 13.0607C17.8086 12.5607 18.0452 12.3107 18.0452 12C18.0452 11.6893 17.8086 11.4393 17.3354 10.9393L12.6608 6" stroke="stroke-current" stroke-width="1.6" stroke-linecap="round" />
@@ -306,11 +342,13 @@ const DetailComponent = () => {
                         <h1 className="text-2xl text-gray-700">
                             <b>Solicitação:</b> {requisition.id} {" - "} {requisition.titulo}
                         </h1>
+                        { /*
                         <button
                             onClick={() => setShowDetails(true)}
                             className="bg-black hover:bg-blackho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2">
                             <Info size={18} />
                         </button>
+                        */ }
                     </div>
 
                     {/* Status and Priority Badges */}
@@ -426,6 +464,15 @@ const DetailComponent = () => {
                         <div className='flex gap-4'>
                             <button
                                 onClick={() => setShowDetails(true)}
+                                className="w-full border bg-black hover:bg-blackho text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
+                            >
+                                <PlusCircle size={18} />
+                                Ver mais Detalhes
+                            </button>
+                        </div>
+                        <div className='flex gap-4 mt-2'>
+                            <button
+                                onClick={() => changeStatus("cancelado")}
                                 className="w-full border bg-white hover:bg-gray text-black font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
                             >
                                 <Trash2 size={18} />
@@ -435,7 +482,7 @@ const DetailComponent = () => {
 
                         <div className='flex gap-4 mt-2'>
                             <button
-                                onClick={() => setShowDetails(true)}
+                                onClick={(e) => changeStatus("aprovado")}
                                 className="w-full bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
                             >
                                 <CircleDollarSign size={18} />
@@ -528,7 +575,7 @@ const DetailComponent = () => {
 
             {/* Details Popup */}
             {showDetails && (
-                <div className="fixed inset-0 bg-blck bg-opacity-80 flex items-center justify-center p-4 z-99999">
+                <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center p-4 z-99999">
                     <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
                         <div className="flex justify-between items-center p-4 border-b">
                             <h2 className="text-xl font-semibold text-gray-800">Detalhes do Projeto</h2>
@@ -581,11 +628,22 @@ const DetailComponent = () => {
                 </div>
             )}
 
+            { /* Pop-up Upload de Arquivo */ }
             { uploading && (
                 <div className="fixed inset-0 bg-blck bg-opacity-70 flex items-center justify-center p-4 z-99999">
                     <div className="grid grid-cols-4 bg-white rounded-lg shadow-xl w-full max-w-md py-6 items-center">
                         <div className="col-span-1"><LoaderMini /></div>
                         <div className="col-span-3"><span>Upload do arquivo em andamento...</span></div>
+                    </div>
+                </div>
+            )}
+
+            { /* Loading dos Dados Iniciais */  }
+            { loadingData && (
+                <div className="fixed inset-0 bg-white bg-opacity-99 flex items-center justify-center p-4 z-99999">
+                    <div className="grid grid-cols-4 bg-white rounded-lg shadow-xl w-full max-w-md py-6 items-center">
+                        <div className="col-span-1"><LoaderMini /></div>
+                        <div className="col-span-3"><span>Carregando Dados da Solicitação...</span></div>
                     </div>
                 </div>
             )}

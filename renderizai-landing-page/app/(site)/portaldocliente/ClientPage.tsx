@@ -179,7 +179,7 @@ const ClientPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                            <div className="bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg h-min-[200]">
                                 <div className="overflow-x-auto rounded-lg border border-gray-200">
                                     <table className="w-full border-collapse bg-white">
                                         <thead>
