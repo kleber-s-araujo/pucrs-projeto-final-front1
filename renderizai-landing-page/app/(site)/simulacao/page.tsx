@@ -267,7 +267,7 @@ const Simulacao: React.FC = () => {
             console.error('Error parsing client data:', error);
           }
         }
-      }, []);
+    }, []);
 
     return (
 

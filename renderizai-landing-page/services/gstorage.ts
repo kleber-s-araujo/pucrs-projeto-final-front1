@@ -2,6 +2,9 @@ import http from '@/app/http-common';
 import { itemGaleria } from '@/types/blog';
 import { Storage } from '@google-cloud/storage';
 
+type action = 'read' | 'write' | 'delete' | 'resumable';
+type version = 'v2' | 'v4';
+
 async function getGalleryHeaders() {
 
   //Busca os Headers da Galeria
@@ -13,7 +16,7 @@ const getGalleryItems = async (max: Number) => {
 
       //Busca todas as imagens da Galeria
       const response = await http.get<any>(`/image/galeria/${max}`);
-      const rows = response.data.rows;
+      const rows = response.data.rows;    
       
       // Map the rows to new images instead of using forEach
       const newImages: itemGaleria[] = rows.map(element => ({
@@ -31,6 +34,7 @@ const getGalleryItems = async (max: Number) => {
   }
 };
 
+/*
 async function generateSignedUrl(bucketName, fileName) {
 
     // Inicializa o cliente do Storage
@@ -42,8 +46,8 @@ async function generateSignedUrl(bucketName, fileName) {
   
       // Configurações da URL assinada
       const options = {
-        version: 'v4',
-        action: "read",
+        version: 'v4' as version,
+        action: 'read' as action,
         expires: Date.now() + 60 * 60 * 1000, // URL válida por 60 minutos
       };
   
@@ -56,9 +60,9 @@ async function generateSignedUrl(bucketName, fileName) {
       throw error;
     }
 };
-
+*/
 const storageService = {
-  generateSignedUrl,
+  //generateSignedUrl,
   getGalleryItems
 }
 export default storageService;

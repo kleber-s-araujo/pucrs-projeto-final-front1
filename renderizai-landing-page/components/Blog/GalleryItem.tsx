@@ -14,13 +14,15 @@ const GalleryItem = ({ blog }: { blog: Blog } ) => {
   const closeModal = () => setSelectedImage(null);
 
   const navigateImage = (direction: 'prev' | 'next') => {
-    if (selectedImage === null) return;
+
+    if (selectedImage === null || !blog.allImages) return;
     
     const newIndex = direction === 'next' 
       ? (selectedImage + 1) % blog.allImages.length
       : (selectedImage - 1 + blog.allImages.length) % blog.allImages.length;
     
     setSelectedImage(newIndex);
+
   };
 
   return (
@@ -98,7 +100,7 @@ const GalleryItem = ({ blog }: { blog: Blog } ) => {
           {/* Modal Image */}
           <div className="max-w-5xl max-h-[90vh] w-full mx-4">
             <img
-              src={blog.allImages[selectedImage]}
+              src={blog.allImages?.[selectedImage] || blog.mainImage || ''}
               alt={blog.title}
               className="w-full h-full object-contain"
             />

@@ -5,11 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Loader from "@/components/Common/Loader";
 import React, { useEffect, useState } from 'react';
 import clientService from '@/services/cliente';
+import { Cliente } from '@/types/cliente';
 
 const ResultPage: React.FC = () => {
 
     const router = useRouter();
-    const cliente = localStorage.getItem("cliente");
+    const [cliente, setCliente] = useState<Cliente | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [resultVal, setResultVal] = useState<number>(0.00);
     const [paymentRadio, setPaymentRadio] = useState<string>('option1');
@@ -76,10 +77,21 @@ const ResultPage: React.FC = () => {
     };
 
     useEffect(() => {
-
+        
         setTimeout(() => setLoading(false), 1000);
+        
+        const storedCliente = localStorage.getItem("cliente");
+        if (storedCliente) {
+          try {
+            const parsedCliente = JSON.parse(storedCliente);
+            setCliente(parsedCliente);
+          } catch (error) {
+            console.error('Error parsing client data:', error);
+          }
+        }
+        
         doCalculation();
-
+        
     }, []);
 
     const CurrencyFormatter = (amount: number) => {

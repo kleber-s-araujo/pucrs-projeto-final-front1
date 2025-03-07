@@ -49,6 +49,9 @@ const DetailComponent = () => {
     const handleSendMessage = () => {
 
         if (message.trim()) {
+            
+            if (cliente === null) return;
+
             clientService.postMessage(requisition.id, cliente.id, message).then((response) => {
 
                 if (response.status == 201) {
@@ -68,13 +71,15 @@ const DetailComponent = () => {
     };
 
     const [files, setFiles] = useState<Arquivo[]>([]);
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const sendUploadFile = async (file: File) => {
 
         setUploading(true);
 
         try {
+
+            if (cliente === null) return;
 
             clientService.postArquivo(requisition.id, cliente?.id, file).then((response) => {
 
@@ -121,7 +126,9 @@ const DetailComponent = () => {
 
     const removeFile = (fileId) => {
 
-        clientService.deletaArquivo(data.id, files[fileId].nome).then((response) => {
+        if (cliente === null) return;
+
+        clientService.deletaArquivo(requisition.id, files[fileId].nome).then((response) => {
 
             if (response.status == 204) {
                 alert("Arquivo Removido!");
@@ -130,6 +137,15 @@ const DetailComponent = () => {
 
         });
     };
+
+    const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        // Impedir o comportamento padrão do link
+        event.preventDefault();
+        
+        // Chame a função changeStatus com o valor desejado
+        // Por exemplo, se você quiser alternar para o status 1:
+        changeStatus("1"); // ou qualquer valor que sua função changeStatus espera
+      };
 
     const changeStatus = (nextStatus: string) => {
         //alert("Alterar Status para: " + nextStatus);
@@ -147,7 +163,7 @@ const DetailComponent = () => {
 
     const downloadFile = async (file: string) => {
 
-        clientService.genURLArquivo(data.id, file).then(async (response) => {
+        clientService.genURLArquivo(requisition.id, file).then(async (response) => {
 
             if (response.status == 200)
             {
@@ -212,7 +228,7 @@ const DetailComponent = () => {
         try {
 
             //Carrega Mensagens
-            clientService.getMensagens(data.id).then((response) => {
+            clientService.getMensagens(requisition.id).then((response) => {
 
                 if (response && response.status == 200) {
 
@@ -248,7 +264,7 @@ const DetailComponent = () => {
         try {
 
             //Carrega Arquivos
-            clientService.getArquivos(data.id).then((response) => {
+            clientService.getArquivos(requisition.id).then((response) => {
 
                 if (response && response?.status == 200) {
 
@@ -279,7 +295,7 @@ const DetailComponent = () => {
             <div className="bg-white rounded-xl py-6 px-10 border shadow-sm space-y-6 mb-4">
                 <ol className="lg:flex justify-beteen items-center w-full space-y-4 lg:space-y-0 lg:space-x-4">
                     <li className="relative ">
-                        <a href="#" onClick={changeStatus} className="flex items-center font-medium w-full  ">
+                        <a href="#" onClick={handleClick} className="flex items-center font-medium w-full  ">
                             <span className={`w-6 h-6 border ${ currentStatus.status == 1 ? 'bg-blue-500 border-transparent' : 'bg-gray-50 border-gray-200' }   rounded-full flex justify-center items-center mr-2 text-sm text-white lg:w-8 lg:h-8`}>1</span>
                             <div className="block">
                                 <h4 className={`text-base ${ currentStatus.status == 1 ? 'text-blue-500' : 'text-waterloo' } `}>Render Solicitado</h4>
@@ -519,7 +535,7 @@ const DetailComponent = () => {
                                 <p className="text-gray-600">
                                     Arraste arquivos aqui ou{' '}
                                     <button
-                                        onClick={() => fileInputRef.current?.click()}
+                                        onClick={(e) => fileInputRef.current?.click()}
                                         className="text-blue-600 hover:text-blue-700 font-medium"
                                     >
                                         selecione do computador
