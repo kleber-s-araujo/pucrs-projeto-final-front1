@@ -16,6 +16,7 @@ const getGalleryItems = async (max: Number) => {
 
       //Busca todas as imagens da Galeria
       const response = await http.get<any>(`/image/galeria/${max}`);
+      console.log("busca imagens: ", response);
       const rows = response.data.rows;    
       
       // Map the rows to new images instead of using forEach

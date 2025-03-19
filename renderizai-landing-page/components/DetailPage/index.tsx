@@ -145,7 +145,7 @@ const DetailComponent = () => {
         // Chame a função changeStatus com o valor desejado
         // Por exemplo, se você quiser alternar para o status 1:
         changeStatus("1"); // ou qualquer valor que sua função changeStatus espera
-      };
+    };
 
     const changeStatus = (nextStatus: string) => {
         //alert("Alterar Status para: " + nextStatus);
