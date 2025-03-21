@@ -24,5 +24,6 @@ export type itemGaleria = {
   idRenderizador: Number,
   titulo: string,
   signedUrl: string,
-  nome: string
+  nome: string,
+  buffer: string
 }

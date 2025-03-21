@@ -1,6 +1,7 @@
 import http from '@/app/http-common';
 import { itemGaleria } from '@/types/blog';
 import { Storage } from '@google-cloud/storage';
+import { buffer } from 'stream/consumers';
 
 type action = 'read' | 'write' | 'delete' | 'resumable';
 type version = 'v2' | 'v4';
@@ -25,7 +26,8 @@ const getGalleryItems = async (max: Number) => {
         idRenderizador: element.idRenderizador,
         titulo: element.titulo,
         signedUrl: element.signedUrl,
-        nome: element.nome
+        nome: element.nome,
+        buffer: element.buffer
       }));
       
       return newImages;

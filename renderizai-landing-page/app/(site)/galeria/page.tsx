@@ -21,7 +21,8 @@ const Galeria: React.FC = () => {
           idRenderizador: element.idRenderizador,
           titulo: element.titulo,
           signedUrl: element.signedUrl,
-          nome: element.nome
+          nome: element.nome,
+          buffer: element.buffer
         }));
 
         setImages(images);
