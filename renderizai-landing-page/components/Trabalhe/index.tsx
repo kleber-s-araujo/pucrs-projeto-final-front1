@@ -27,7 +27,7 @@ const Trabalhe = () => {
       const retorno = await contatoService.enviaTrabalheConosco(
         formData.nome, formData.email, formData.especialidade, formData.telefone, formData.links, formData.mensagem);
 
-      if (retorno.status === 200) {
+      if (retorno.status === 204) {
         toast.success('Obrigado por expressar sua vontade de fazer parte da Renderizaí. Vamos analisar os seus dados e em breve entraremos em contato!');
         setFormData({ nome: "", email: "", especialidade: "", telefone: "", links: "", mensagem: "" });
       }

@@ -25,7 +25,7 @@ const Contact = () => {
     try {
       
       const retorno = await contatoService.enviaMensagemContato(formData.nome, formData.email, formData.assunto, formData.telefone, formData.mensagem);
-      if (retorno.status === 200)
+      if (retorno.status === 204)
       { 
         toast.success('Obrigado por entrar com contao. Sua Mensagem foi recebida com Sucesso!');
         setFormData({ nome: "", email: "", assunto: "", telefone: "", mensagem: "" });
