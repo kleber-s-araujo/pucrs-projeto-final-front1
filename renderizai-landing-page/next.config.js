@@ -4,7 +4,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["localhost", "storage.googleapis.com"],
+    domains: [ process.env.HOSTH, "storage.googleapis.com"],
     remotePatterns: [
       {
         protocol: "https",

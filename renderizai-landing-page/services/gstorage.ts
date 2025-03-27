@@ -11,6 +11,12 @@ async function getGalleryHeaders() {
   //Busca os Headers da Galeria
 }
 
+const loadImage = async ( image : string ) => {
+
+
+
+}
+
 const getGalleryItems = async (max: Number) => {
 
   try {
@@ -25,7 +31,7 @@ const getGalleryItems = async (max: Number) => {
         idImagem: element.idImagem,
         idRenderizador: element.idRenderizador,
         titulo: element.titulo,
-        signedUrl: element.signedUrl,
+        signedUrl: `${process.env.HOST}:${process.env.PORTA}/api/image/url/${element.idImagem}`, //element.signedUrl,
         nome: element.nome,
         buffer: element.buffer
       }));

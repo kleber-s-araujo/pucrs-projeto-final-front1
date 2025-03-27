@@ -34,7 +34,8 @@ const GalleryImage: React.FC<GalleryItemProps> = ({
       { /* <img className="rounded-lg" src={Imagem.signedUrl} onClick={() => openModal(1)} /> */ }
       
       <div onClick={() => openModal(1)}>
-        <LazyImage src={`data:image/jpeg;base64,${Imagem.buffer}`}  alt={Imagem.titulo} width={800} height={600} />
+        { /* <LazyImage src={`data:image/jpeg;base64,${Imagem.buffer}`}  alt={Imagem.titulo} width={800} height={600} /> */ }
+        <LazyImage src={Imagem.signedUrl}  alt={Imagem.titulo} width={800} height={600} />
       </div>      
 
       <div className="rounded-b-lg pt-2 absolute w-full bottom-0 left-0 opacity-0 group-hover:opacity-30 bg-blck h-15" />
