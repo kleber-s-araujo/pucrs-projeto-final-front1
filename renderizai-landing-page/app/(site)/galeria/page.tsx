@@ -38,8 +38,8 @@ const Galeria: React.FC = () => {
     <>
       {/* <!-- ===== Image Grid Start ===== --> */}
       <section className="py-20 lg:py-25 xl:py-20">
-        <div className="mx-auto max-w-c-1300 xl:mt-10 xl:px-0">
-          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 px-20 text-white">
+        <div className="mx-auto max-w-c-1300 mt-6 xl:mt-10 xl:px-0">
+          <div className="columns-1 sm:columns-2 md:columns-3 xl:columns-4 px-6 md:px-10 xl:px-30 text-white">
             { images?.map((imagem, index) => (
               <GalleryImage key={index} itemkey={index} Imagem={imagem} />
             ))}

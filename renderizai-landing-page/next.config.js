@@ -13,6 +13,10 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    HOST: process.env.HOST,
+    PORTA: process.env.PORTA
+  }
 };
 
 module.exports = nextConfig;

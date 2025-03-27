@@ -10,7 +10,7 @@ interface LazyImageProps {
 const LazyImage = ({ src, alt, width, height }: LazyImageProps) => {
   return (
     <Image
-      className="rounded-lg"
+      className="rounded-md"
       src={src}
       alt={alt}
       width={width}
