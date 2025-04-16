@@ -7,6 +7,7 @@ import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
 import Pricing from "@/components/Pricing";
 import Testimonial from "@/components/Testimonial";
+import Carrousel from "@/components/Carrousel";
 
 export const metadata: Metadata = {
   title: "Renderizaí | Plataforma de Renderização",
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main>
-      <Hero />
+      {/*  <Hero /> */}
+      <Carrousel />
       <Brands />
       <Feature />
       <About />

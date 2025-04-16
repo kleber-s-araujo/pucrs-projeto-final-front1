@@ -22,6 +22,7 @@ const brandData: Brand[] = [
     image: "/images/brand/brand-ps.svg",
     imageLight: "/images/brand/brand-ps.svg",
   },
+  /*
   {
     id: 0.6,
     name: "Blender",
@@ -29,6 +30,7 @@ const brandData: Brand[] = [
     image: "/images/brand/brand-Blender.svg",
     imageLight: "/images/brand/brand-Blender.svg",
   },
+  */
 ];
 
 export default brandData;

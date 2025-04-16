@@ -24,20 +24,22 @@ const SingleBrand = ({ brand }: { brand: Brand }) => {
         whileInView="visible"
         transition={{ duration: 1, delay: id }}
         viewport={{ once: true }}        
-        className="animate_top mx-w-full relative block h-50 w-[170px] -mt-15"
+        className="animate_top mx-w-full relative h-50 -mt-15 justify-center items-center xl:p-12.5"
       >
-        <Image
-          className="opacity-65 transition-all duration-300 hover:opacity-100 dark:hidden"
-          src={image}
-          alt={name}
-          fill
-        />
-        <Image
-          className="hidden opacity-50 transition-all duration-300 hover:opacity-100 dark:block"
-          src={imageLight}
-          alt={name}
-          fill
-        />
+        <div>
+          <Image
+            className="opacity-65 transition-all duration-300 hover:opacity-100 dark:hidden justify-center"
+            src={image}
+            alt={name}
+            fill
+          />
+          <Image
+            className="hidden opacity-50 transition-all duration-300 hover:opacity-100 dark:block justify-center"
+            src={imageLight}
+            alt={name}
+            fill
+          />
+        </div>        
       </motion.a>
     </>
   );

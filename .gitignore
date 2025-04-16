@@ -134,3 +134,4 @@ dist
 *vertical*.json
 .env
 *.env
+next.config.js

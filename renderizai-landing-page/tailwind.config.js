@@ -32,8 +32,6 @@ module.exports = {
         blacksection: "#1C2136",
         primary: "#727D73", 
         primaryho: "#5a625a",
-        /* primary: "#28666e", 
-        primaryho: "#153538", */
         meta: "#20C5A8",
         waterloo: "#757693",
         manatee: "#999AA1",
@@ -139,8 +137,13 @@ module.exports = {
           "0%, 100%": { transform: "translateY(100%)" },
           "50%": { transform: "translateY(0)" },
         },
+        'loop-scroll': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
+        },
       },
       animation: {
+        'loop-scroll': 'loop-scroll 50s linear infinite',
         line1: "line 3s linear infinite",
         line2: "line 6s linear infinite",
         line3: "line 9s linear infinite",
